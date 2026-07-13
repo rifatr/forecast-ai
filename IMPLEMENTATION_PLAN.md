@@ -42,9 +42,7 @@
 
 
 
-### Out of scope (MVP)
-
-- Full user-facing frontend (optional static demo page only if time permits)
+- Premium full-stack Frontend Web Application (React/Vite)
 - Firebase callable functions (`cancelSubscription`, `getPaystackConfig`, etc.)
 - Webhooks, SMS, Pro/Scale routes (documented as future work)
 - Exhaustive edge-case test coverage
@@ -429,7 +427,7 @@ WeatherAi-Assignment/
 
 
 
-### Phase 6 — Trees module (stretch)
+### Phase 6 — Farm Intelligence (Trees module)
 
 **Branch:** `feat/trees` → merge to `main`  
 **Commit:** `feat(trees): add tree analysis and quota routes`
@@ -489,12 +487,31 @@ WeatherAi-Assignment/
 
 
 
-### Phase 9 — Stretch goals (only if ahead of schedule)
+### Phase 9 — Premium Frontend UI (React/Vite)
 
-- [ ] **9.1** `GET /v1/daily` and `GET /v1/hourly` proxy routes
-- [ ] **9.2** Plan-gating middleware for Pro/Scale routes (403 with `requiredPlan`)
-- [ ] **9.3** Minimal static HTML demo page calling `/v1/dashboard`
-- [ ] **9.4** Basic e2e test with `supertest`
+**Branch:** `feat/frontend` → merge to `main`  
+**Commit:** `feat(frontend): build premium React/Vite web application`
+
+- [ ] **9.1** Scaffold Vite React app (`npx create-vite@latest frontend --template react-ts`)
+- [ ] **9.2** Implement Vanilla CSS design system (dark mode, glassmorphism, dynamic animations)
+- [ ] **9.3** Build **Dashboard** view (Current Weather, Forecast, AI Summary, Quick Stats)
+- [ ] **9.4** Build **Farm Intelligence** view (Image upload, Tree Analysis, Overlay, AI Recommendation)
+- [ ] **9.5** Build **History** view (Analysis History)
+- [ ] **9.6** Build **Account** view (Usage stats)
+- [ ] **9.7** Connect frontend to NestJS Proxy API
+- [ ] **9.8** Merge to `main`
+
+**Acceptance:** Beautiful, dynamic UI that successfully consumes the proxy endpoints.
+
+---
+
+
+
+### Phase 10 — Stretch goals (only if ahead of schedule)
+
+- [ ] **10.1** `GET /v1/daily` and `GET /v1/hourly` proxy routes
+- [ ] **10.2** Plan-gating middleware for Pro/Scale routes (403 with `requiredPlan`)
+- [ ] **10.3** Basic e2e test with `supertest`
 
 ---
 
@@ -772,10 +789,11 @@ Use this summary to track overall completion:
 | 3     | Weather & account           | ✅ Done        |
 | 4     | Redis cache & rate limiting | ⬜ Not started |
 | 5     | Dashboard aggregate         | ⬜ Not started |
-| 6     | Trees module (stretch)      | ⬜ Not started |
+| 6     | Farm Intelligence (Trees)   | ⬜ Not started |
 | 7     | Documentation               | ⬜ Not started |
 | 8     | Docker & deployment         | ⬜ Not started |
-| 9     | Stretch goals               | ⬜ Not started |
+| 9     | Premium Frontend UI         | ⬜ Not started |
+| 10    | Stretch goals               | ⬜ Not started |
 
 
 > Update checkboxes and status columns as you complete each task. Mark phases ✅ Done when all child todos are checked.
