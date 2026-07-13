@@ -1,5 +1,6 @@
 import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { CacheTTL } from '@nestjs/cache-manager';
+import { SmartCacheInterceptor } from '../common/smart-cache.interceptor';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { WeatherService } from './weather.service';
 import { WeatherQueryDto } from './dto/weather-query.dto';
@@ -8,7 +9,7 @@ import { CurrentWeatherQueryDto } from './dto/current-weather-query.dto';
 
 @ApiTags('Weather')
 @Controller('v1')
-@UseInterceptors(CacheInterceptor)
+@UseInterceptors(SmartCacheInterceptor)
 export class WeatherController {
 	constructor(private readonly weatherService: WeatherService) {}
 

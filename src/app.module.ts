@@ -43,7 +43,7 @@ import { AccountModule } from './account/account.module';
 				throttlers: [
 					{
 						ttl: config.get<number>('THROTTLE_TTL', 60000),
-						limit: config.get<number>('THROTTLE_LIMIT', 20),
+						limit: config.get<number>('THROTTLE_LIMIT', 15),
 					},
 				],
 				storage: new ThrottlerStorageRedisService(

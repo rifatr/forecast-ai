@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom, timeout } from 'rxjs';
 import { AxiosError } from 'axios';
+import { QuotaService } from './quota.service';
 
 @Injectable()
 export class WeatherAiClient {
@@ -14,6 +15,7 @@ export class WeatherAiClient {
 	constructor(
 		private readonly httpService: HttpService,
 		private readonly configService: ConfigService,
+		private readonly quotaService: QuotaService,
 	) {
 		this.baseUrl = this.configService.get<string>('wai.baseUrl')!;
 		this.apiKey = this.configService.get<string>('wai.apiKey')!;
@@ -52,6 +54,22 @@ export class WeatherAiClient {
 				this.logger.debug(
 					`Upstream RateLimit - Limit: ${rateLimitLimit ?? 'N/A'}, Remaining: ${rateLimitRemaining ?? 'N/A'}, Reset: ${rateLimitReset ?? 'N/A'}`,
 				);
+
+				if (rateLimitLimit && rateLimitRemaining && rateLimitReset) {
+					// Catch promise implicitly to not block request flow
+					this.quotaService
+						.updateQuota(
+							parseInt(rateLimitLimit, 10),
+							parseInt(rateLimitRemaining, 10),
+							parseInt(rateLimitReset, 10),
+						)
+						.catch((err) =>
+							this.logger.error(
+								'Failed to update quota cache',
+								err,
+							),
+						);
+				}
 			}
 
 			return data;

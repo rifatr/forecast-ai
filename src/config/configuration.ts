@@ -12,6 +12,34 @@ export default () => ({
 	},
 	throttle: {
 		ttl: parseInt(process.env.THROTTLE_TTL ?? '60000', 10),
-		limit: parseInt(process.env.THROTTLE_LIMIT ?? '60', 10),
+		limit: parseInt(process.env.THROTTLE_LIMIT ?? '15', 10),
+	},
+	cache: {
+		adaptive: {
+			warningThreshold: parseInt(
+				process.env.ADAPTIVE_CACHE_THRESHOLD_WARNING ?? '30',
+				10,
+			),
+			warningMultiplier: parseInt(
+				process.env.ADAPTIVE_CACHE_MULTIPLIER_WARNING ?? '12',
+				10,
+			),
+			criticalThreshold: parseInt(
+				process.env.ADAPTIVE_CACHE_THRESHOLD_CRITICAL ?? '10',
+				10,
+			),
+			criticalMultiplier: parseInt(
+				process.env.ADAPTIVE_CACHE_MULTIPLIER_CRITICAL ?? '144',
+				10,
+			),
+			emergencyThreshold: parseInt(
+				process.env.ADAPTIVE_CACHE_THRESHOLD_EMERGENCY ?? '2',
+				10,
+			),
+			emergencyMultiplier: parseInt(
+				process.env.ADAPTIVE_CACHE_MULTIPLIER_EMERGENCY ?? '288',
+				10,
+			),
+		},
 	},
 });

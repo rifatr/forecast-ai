@@ -19,4 +19,11 @@ export const envValidationSchema = Joi.object({
 
 	THROTTLE_TTL: Joi.number().positive().default(60000),
 	THROTTLE_LIMIT: Joi.number().positive().default(60),
+
+	ADAPTIVE_CACHE_THRESHOLD_WARNING: Joi.number().positive().default(30),
+	ADAPTIVE_CACHE_MULTIPLIER_WARNING: Joi.number().positive().default(12),
+	ADAPTIVE_CACHE_THRESHOLD_CRITICAL: Joi.number().positive().default(10),
+	ADAPTIVE_CACHE_MULTIPLIER_CRITICAL: Joi.number().positive().default(144),
+	ADAPTIVE_CACHE_THRESHOLD_EMERGENCY: Joi.number().positive().default(2),
+	ADAPTIVE_CACHE_MULTIPLIER_EMERGENCY: Joi.number().positive().default(288),
 });
