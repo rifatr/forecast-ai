@@ -4,9 +4,9 @@ NestJS proxy backend for the [WeatherAI API](https://weather-ai.co/docs). Client
 
 ## Status
 
-**Phase 1 complete** — NestJS scaffold, validated env config, CORS, and global validation pipe.
+**Phase 2 complete** — Common infrastructure (WeatherAI HTTP client, mock mode, exception filter, health check endpoint).
 
-Upcoming: upstream WeatherAI client, health check, weather/account routes, Redis cache & rate limiting, dashboard aggregate, docs, and deployment.
+Upcoming: weather/account routes, Redis cache & rate limiting, dashboard aggregate, docs, and deployment.
 
 See [IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md) for the full roadmap.
 
@@ -26,10 +26,10 @@ npm install
 npm run start:dev
 ```
 
-Server listens on `http://localhost:3000` (or `PORT` from `.env`).
+Server listens on `http://localhost:3001` (or `PORT` from `.env`).
 
 ```bash
-curl http://localhost:3000
+curl http://localhost:3001
 # Hello World!
 ```
 
@@ -52,7 +52,7 @@ curl http://localhost:3000
 | `WAI_MOCK` | No | `false` | Skip real upstream calls (fixtures coming in Phase 2) |
 | `WAI_BASE_URL` | No | `https://api.weather-ai.co` | Upstream API base URL |
 | `REDIS_URL` | No | `redis://localhost:6379` | Redis connection string |
-| `PORT` | No | `3000` | HTTP port |
+| `PORT` | No | `3001` | HTTP port |
 | `NODE_ENV` | No | `development` | `development` \| `production` \| `test` |
 | `THROTTLE_TTL` | No | `60000` | Rate-limit window (ms) |
 | `THROTTLE_LIMIT` | No | `60` | Max requests per window per IP |
