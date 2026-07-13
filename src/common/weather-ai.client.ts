@@ -41,9 +41,12 @@ export class WeatherAiClient {
 			);
 
 			// Capture X-RateLimit headers
-			const rateLimitLimit = headers['x-ratelimit-limit'] 		as string | undefined;
-			const rateLimitRemaining = headers['x-ratelimit-remaining'] as string | undefined;
-			const rateLimitReset = headers['x-ratelimit-reset'] 		as string | undefined;
+			const rateLimitLimit = headers['x-ratelimit-limit'] as
+				string | undefined;
+			const rateLimitRemaining = headers['x-ratelimit-remaining'] as
+				string | undefined;
+			const rateLimitReset = headers['x-ratelimit-reset'] as
+				string | undefined;
 
 			if (rateLimitRemaining || rateLimitLimit || rateLimitReset) {
 				this.logger.debug(
@@ -77,7 +80,8 @@ export class WeatherAiClient {
 							code: 'RATE_LIMITED',
 							message: 'Upstream quota nearly exhausted',
 							retryAfter:
-								(error.response.headers['retry-after'] as string | undefined) || 3600,
+								(error.response.headers['retry-after'] as
+									string | undefined) || 3600,
 						},
 						HttpStatus.TOO_MANY_REQUESTS,
 					);

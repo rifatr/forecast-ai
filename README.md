@@ -4,9 +4,9 @@ NestJS proxy backend for the [WeatherAI API](https://weather-ai.co/docs). Client
 
 ## Status
 
-**Phase 2 complete** — Common infrastructure (WeatherAI HTTP client, mock mode, exception filter, health check endpoint).
+**Phase 3 complete** — Core API routes implemented (Weather, Geo, Current, Usage) and Swagger documented.
 
-Upcoming: weather/account routes, Redis cache & rate limiting, dashboard aggregate, docs, and deployment.
+Upcoming: Redis cache & rate limiting, dashboard aggregate, docs, and deployment.
 
 See [IMPLEMENTATION_PLAN.md](../IMPLEMENTATION_PLAN.md) for the full roadmap.
 

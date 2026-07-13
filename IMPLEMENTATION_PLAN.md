@@ -377,14 +377,14 @@ WeatherAi-Assignment/
 **Branch:** `feat/weather` → merge to `main`  
 **Commits:** `feat(weather)`, `feat(account)`
 
-- [ ] **3.1** Create `WeatherModule` with DTOs (`WeatherQueryDto` — lat, lon, days, ai, units, lang)
-- [ ] **3.2** Implement `GET /v1/weather` → upstream `GET /v1/weather`
-- [ ] **3.3** Implement `GET /v1/weather/geo` → upstream `GET /v1/weather-geo`
-- [ ] **3.4** Implement `GET /v1/current` → upstream `GET /v1/current`
-- [ ] **3.5** Default `ai=false` unless client passes `ai=true`
-- [ ] **3.6** Create `AccountModule` — `GET /v1/usage` → upstream `GET /v1/usage`
-- [ ] **3.7** Add Swagger decorators to controllers and DTOs
-- [ ] **3.8** Merge to `main`
+- [x] **3.1** Create `WeatherModule` with DTOs (`WeatherQueryDto` — lat, lon, days, ai, units, lang)
+- [x] **3.2** Implement `GET /v1/weather` → upstream `GET /v1/weather`
+- [x] **3.3** Implement `GET /v1/weather/geo` → upstream `GET /v1/weather-geo`
+- [x] **3.4** Implement `GET /v1/current` → upstream `GET /v1/current`
+- [x] **3.5** Default `ai=false` unless client passes `ai=true`
+- [x] **3.6** Create `AccountModule` — `GET /v1/usage` → upstream `GET /v1/usage`
+- [x] **3.7** Add Swagger decorators to controllers and DTOs
+- [x] **3.8** Merge to `main`
 
 **Acceptance:** `curl "localhost:3001/v1/weather?lat=-1.2921&lon=36.8219"` returns real weather JSON
 
@@ -769,7 +769,7 @@ Use this summary to track overall completion:
 | 0     | Prerequisites               | ✅ Done        |
 | 1     | Scaffold & git baseline     | ✅ Done        |
 | 2     | Common infrastructure       | ✅ Done        |
-| 3     | Weather & account           | ⬜ Not started |
+| 3     | Weather & account           | ✅ Done        |
 | 4     | Redis cache & rate limiting | ⬜ Not started |
 | 5     | Dashboard aggregate         | ⬜ Not started |
 | 6     | Trees module (stretch)      | ⬜ Not started |
