@@ -39,9 +39,6 @@
 - Simplified aggregate endpoint (`GET /v1/dashboard`)
 - README, `docs/`, Swagger (`/api`), and Postman collection
 - Atomic conventional commits with readable git history
-
-
-
 - Premium full-stack Frontend Web Application (React/Vite)
 - Firebase callable functions (`cancelSubscription`, `getPaystackConfig`, etc.)
 - Webhooks, SMS, Pro/Scale routes (documented as future work)
@@ -395,9 +392,9 @@ WeatherAi-Assignment/
 **Branch:** `feat/redis` → merge to `main`  
 **Commits:** `feat(cache)`, `feat(throttle)`, `feat(quota)`
 
-- [ ] **4.1** Add `docker-compose.yml` with Redis service
-- [ ] **4.2** Configure `CacheModule` with Redis store and per-resource TTLs
-- [ ] **4.3** Apply cache interceptor to weather and account routes
+- [x] **4.1** Add `docker-compose.yml` with Redis service
+- [x] **4.2** Configure `CacheModule` with Redis store and per-resource TTLs
+- [x] **4.3** Apply cache interceptor to weather and account routes
 - [ ] **4.4** Configure `ThrottlerModule` with Redis storage — 60 req/min per IP
 - [ ] **4.5** Create `QuotaService` — track upstream remaining from response headers
 - [ ] **4.6** Create `QuotaGuard` — return 429 when upstream quota critically low
