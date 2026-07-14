@@ -5,5 +5,6 @@ import { TreesController } from './trees.controller';
 @Module({
 	providers: [TreesService],
 	controllers: [TreesController],
+	exports: [TreesService],
 })
 export class TreesModule {}

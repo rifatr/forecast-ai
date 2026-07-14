@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { WeatherService } from '../weather/weather.service';
 import { AccountService } from '../account/account.service';
-import { WeatherAiClient } from '../common/weather-ai.client';
+import { TreesService } from '../trees/trees.service';
 import { WeatherGeoQueryDto } from '../weather/dto/weather-geo-query.dto';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class DashboardService {
 	constructor(
 		private readonly weatherService: WeatherService,
 		private readonly accountService: AccountService,
-		private readonly weatherAiClient: WeatherAiClient,
+		private readonly treesService: TreesService,
 	) {}
 
 	async getDashboardData(ip: string) {
@@ -24,9 +24,7 @@ export class DashboardService {
 		const [weatherRes, usageRes, treesQuotaRes] = await Promise.allSettled([
 			this.weatherService.getWeatherGeo(weatherQuery),
 			this.accountService.getUsage(),
-			this.weatherAiClient.get<Record<string, unknown>>(
-				'/v1/trees/quota',
-			),
+			this.treesService.getQuota(),
 		]);
 
 		const extract = (
