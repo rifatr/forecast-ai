@@ -1,5 +1,21 @@
 version: '3.8'
 services:
+  forecast-ai-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: forecast-ai-server
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - forecast-network
+
   redis:
     image: redis:7-alpine
     container_name: forecast-ai-redis
@@ -8,6 +24,12 @@ services:
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
+    networks:
+      - forecast-network
 
 volumes:
   redis_data:
+
+networks:
+  forecast-network:
+    driver: bridge

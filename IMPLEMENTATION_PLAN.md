@@ -1,4 +1,4 @@
-# WeatherAI Proxy Backend — Implementation Plan
+# WeatherAI Backend Server — Implementation Plan
 
 > **Assignment:** Build a deployed backend service that integrates [WeatherAI APIs](https://weather-ai.co/docs), proxies upstream calls (API key never exposed to clients), and demonstrates clean architecture with rate limiting, caching, documentation, and proper git history.
 >
@@ -401,13 +401,13 @@ WeatherAi-Assignment/
 **Branch:** `docs/readme` → merge to `main`  
 **Commits:** `docs: add README`, `docs: add ARCHITECTURE.md and Postman collection`, `docs: enable Swagger at /api`
 
-- [ ] **7.1** Write `README.md` (see [Documentation Deliverables](#documentation-deliverables))
+- [x] **7.1** Write `README.md` (see [Documentation Deliverables](#documentation-deliverables))
   - *Note: Add an "Architecture & Highlights" section at the top of the README that explicitly maps to the assignment evaluation criteria to make grading easy.*
-- [ ] **7.2** Write `docs/ARCHITECTURE.md` — diagrams, module roles, request lifecycle
-- [ ] **7.3** Write `docs/API.md` — endpoint reference, error codes, examples
-- [ ] **7.4** Create Postman collection + environment (`baseUrl`, `lat`, `lon`)
-- [ ] **7.5** Enable Swagger UI at `/api` with full DTO documentation
-- [ ] **7.6** Merge to `main`
+- [x] **7.2** Write `docs/ARCHITECTURE.md` — diagrams, module roles, request lifecycle
+- [x] **7.3** Write `docs/API.md` — endpoint reference, error codes, examples
+- [x] **7.4** Create Postman collection + environment (`baseUrl`, `lat`, `lon`)
+- [x] **7.5** Enable Swagger UI at `/api` with full DTO documentation
+- [x] **7.6** Merge to `main`
 
 **Acceptance:** Evaluator can clone, read README, import Postman, and hit Swagger without asking questions
 
@@ -699,8 +699,8 @@ Use this summary to track overall completion:
 | 3     | Weather & account           | ✅ Done        |
 | 4     | Redis cache & rate limiting | ✅ Done        |
 | 5     | Dashboard aggregate         | ✅ Done        |
-| 6     | Trees module (stretch)      | ⬜ Not started |
-| 7     | Documentation               | ⬜ Not started |
+| 6     | Trees module (stretch)      | ✅ Done        |
+| 7     | Documentation               | ✅ Done        |
 | 8     | Docker & deployment         | ⬜ Not started |
 | 9     | Premium Frontend UI         | ⬜ Not started |
 | 10    | Stretch goals               | ⬜ Not started |

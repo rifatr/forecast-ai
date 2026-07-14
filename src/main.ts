@@ -35,9 +35,9 @@ async function bootstrap() {
 	app.useGlobalFilters(new HttpExceptionFilter());
 
 	const config = new DocumentBuilder()
-		.setTitle('Forecast AI Proxy')
+		.setTitle('Forecast AI Server')
 		.setDescription(
-			'API Proxy for WeatherAI with Caching and Rate Limiting',
+			'Forecast AI Backend Server with Caching and Rate Limiting',
 		)
 		.setVersion('1.0')
 		.build();

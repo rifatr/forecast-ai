@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "b3e9b1d9-83f0-4a81-9b7d-6f29a0a1f0d2",
+		"name": "ForecastAI Proxy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			}
+		},
+		{
+			"name": "Dashboard Aggregate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v1/dashboard?lat={{lat}}&lon={{lon}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"dashboard"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "{{lat}}"
+						},
+						{
+							"key": "lon",
+							"value": "{{lon}}"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Weather",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v1/weather?lat={{lat}}&lon={{lon}}&ai=false",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"weather"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "{{lat}}"
+						},
+						{
+							"key": "lon",
+							"value": "{{lon}}"
+						},
+						{
+							"key": "ai",
+							"value": "false"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Geo Weather",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v1/weather-geo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"weather-geo"
+					]
+				}
+			}
+		},
+		{
+			"name": "Usage Stats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v1/usage",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"usage"
+					]
+				}
+			}
+		},
+		{
+			"name": "Analyze Trees",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "county",
+							"value": "Bomet",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/v1/trees/analyze",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"trees",
+						"analyze"
+					]
+				}
+			}
+		},
+		{
+			"name": "Trees History",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v1/trees/history?limit=10",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"trees",
+						"history"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Trees Quota",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v1/trees/quota",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"trees",
+						"quota"
+					]
+				}
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3001"
+		},
+		{
+			"key": "lat",
+			"value": "-1.2921"
+		},
+		{
+			"key": "lon",
+			"value": "36.8219"
+		}
+	]
+}
