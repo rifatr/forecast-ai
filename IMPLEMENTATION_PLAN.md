@@ -418,9 +418,9 @@ WeatherAi-Assignment/
 **Branch:** `chore/deploy` → merge to `main`  
 **Commits:** `chore: add Dockerfile and docker-compose`, `chore: configure deployment`
 
-- [ ] **8.1** Write multi-stage `Dockerfile` (build → production image)
-- [ ] **8.2** Finalize `docker-compose.yml` (api + redis for local)
-- [ ] **8.3** Push repo to GitHub
+- [x] **8.1** Write multi-stage `Dockerfile` (build → production image)
+- [x] **8.2** Finalize `docker-compose.yml` (api + redis for local)
+- [x] **8.3** Push repo to GitHub
 - [ ] **8.4** Create Upstash Redis instance; copy `REDIS_URL`
 - [ ] **8.5** Deploy to Railway or Render from Dockerfile
 - [ ] **8.6** Set env vars: `WAI_API_KEY`, `WAI_PLAN=free`, `REDIS_URL`, `PORT`

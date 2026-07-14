@@ -77,6 +77,9 @@ Explore the interactive API documentation at: **[http://localhost:3001/api](http
 | Route               | Method | Purpose                                    |
 | ------------------- | ------ | ------------------------------------------ |
 | `/v1/weather`       | `GET`  | Current conditions and forecast retrieval  |
+| `/v1/current`       | `GET`  | Current conditions only                    |
+| `/v1/daily`         | `GET`  | Daily forecast data only                   |
+| `/v1/hourly`        | `GET`  | Hourly forecast data only                  |
 | `/v1/weather-geo`   | `GET`  | Weather conditions with geological IP data |
 | `/v1/dashboard`     | `GET`  | Aggregated weather, geo, usage, and quota  |
 | `/v1/usage`         | `GET`  | Upstream API usage limits                  |
@@ -96,12 +99,14 @@ Explore the interactive API documentation at: **[http://localhost:3001/api](http
 | `WAI_API_KEY`    | Yes*     | —                           | WeatherAI Bearer token (`wai_...`)            |
 | `WAI_PLAN`       | No       | `free`                      | `free` | `pro` | `scale`                      |
 | `WAI_MOCK`       | No       | `false`                     | Skip real upstream calls and return mock data |
+| `WAI_MOCK_TREES` | No       | `true`                      | Use mock data specifically for trees endpoints|
 | `WAI_BASE_URL`   | No       | `https://api.weather-ai.co` | Upstream API base URL                         |
 | `REDIS_URL`      | No       | `redis://localhost:6379`    | Redis connection string                       |
 | `PORT`           | No       | `3001`                      | HTTP port                                     |
 | `NODE_ENV`       | No       | `development`               | `development` | `production` | `test`         |
 | `THROTTLE_TTL`   | No       | `60000`                     | Rate-limit window (ms)                        |
-| `THROTTLE_LIMIT` | No       | `60`                        | Max requests per window per IP                |
+| `THROTTLE_LIMIT` | No       | `15`                        | Max requests per window per IP                |
+| `ADAPTIVE_CACHE_*`| No      | (various)                   | Thresholds/multipliers for SmartCache         |
 
 
  *Not required when* `WAI_MOCK=true`*.*

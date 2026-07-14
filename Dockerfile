@@ -1,31 +1,21 @@
-# --- Base Node ---
-FROM node:20-alpine AS builder
+# Base stage for deps and build
+FROM node:20-alpine AS build
 WORKDIR /app
-
-# Copy package.json and lockfile
 COPY package*.json ./
 RUN npm ci
-
-# Copy source code
 COPY . .
 RUN npm run build
+RUN npm prune --production
 
-# --- Production Image ---
-FROM node:20-alpine AS runner
+# Production stage
+FROM node:20-alpine
 WORKDIR /app
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/package.json ./package.json
 
-# Set node env
 ENV NODE_ENV=production
-
-# Copy only production dependencies
-COPY package*.json ./
-RUN npm ci --omit=dev
-
-# Copy compiled output from builder
-COPY --from=builder /app/dist ./dist
-
-# Expose port
+ENV PORT=3001
 EXPOSE 3001
 
-# Start the application
-CMD ["node", "dist/main"]
+CMD ["npm", "run", "start:prod"]
