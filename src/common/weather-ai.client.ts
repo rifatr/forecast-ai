@@ -53,39 +53,78 @@ export class WeatherAiClient {
 					.pipe(timeout(10000)),
 			);
 
-			// Capture X-RateLimit headers
-			const rateLimitLimit = headers['x-ratelimit-limit'] as
-				string | undefined;
-			const rateLimitRemaining = headers['x-ratelimit-remaining'] as
-				string | undefined;
-			const rateLimitReset = headers['x-ratelimit-reset'] as
-				string | undefined;
-
-			if (rateLimitRemaining || rateLimitLimit || rateLimitReset) {
-				this.logger.debug(
-					`Upstream RateLimit - Limit: ${rateLimitLimit ?? 'N/A'}, Remaining: ${rateLimitRemaining ?? 'N/A'}, Reset: ${rateLimitReset ?? 'N/A'}`,
-				);
-
-				if (rateLimitLimit && rateLimitRemaining && rateLimitReset) {
-					// Catch promise implicitly to not block request flow
-					this.quotaService
-						.updateQuota(
-							parseInt(rateLimitLimit, 10),
-							parseInt(rateLimitRemaining, 10),
-							parseInt(rateLimitReset, 10),
-						)
-						.catch((err) =>
-							this.logger.error(
-								'Failed to update quota cache',
-								err,
-							),
-						);
-				}
-			}
+			this.captureRateLimit(headers);
 
 			return { data, headers };
 		} catch (error) {
 			this.handleUpstreamError(error);
+		}
+	}
+
+	async postMultipart<T>(
+		endpoint: string,
+		file: Express.Multer.File,
+		body?: Record<string, any>,
+	): Promise<T> {
+		if (this.mock) {
+			this.logger.log(`Mocking multipart request to ${endpoint}`);
+			return { analysis: 'Healthy', confidence: 0.95 } as unknown as T;
+		}
+
+		try {
+			const formData = new FormData();
+			const blob = new Blob([new Uint8Array(file.buffer)], {
+				type: file.mimetype,
+			});
+			formData.append('image', blob, file.originalname);
+
+			if (body) {
+				Object.keys(body).forEach((key) => {
+					if (key !== 'image' && body[key] !== undefined) {
+						formData.append(key, String(body[key]));
+					}
+				});
+			}
+
+			const { data, headers } = await firstValueFrom(
+				this.httpService
+					.post<T>(`${this.baseUrl}${endpoint}`, formData, {
+						headers: {
+							Authorization: `Bearer ${this.apiKey}`,
+						},
+					})
+					.pipe(timeout(30000)),
+			);
+
+			this.captureRateLimit(headers);
+
+			return data;
+		} catch (error) {
+			this.handleUpstreamError(error);
+		}
+	}
+
+	private captureRateLimit(headers: Record<string, any>) {
+		const limit = headers['x-ratelimit-limit'] as string | undefined;
+		const remaining = headers['x-ratelimit-remaining'] as string | undefined;
+		const resetOn = headers['x-ratelimit-reset'] as string | undefined;
+
+		if (remaining || limit || resetOn) {
+			this.logger.debug(
+				`Upstream RateLimit - Limit: ${limit ?? 'N/A'}, Remaining: ${remaining ?? 'N/A'}, Reset: ${resetOn ?? 'N/A'}`,
+			);
+
+			if (limit && remaining && resetOn) {
+				this.quotaService
+					.updateQuota(
+						parseInt(limit, 10),
+						parseInt(remaining, 10),
+						parseInt(resetOn, 10),
+					)
+					.catch((err) =>
+						this.logger.error('Failed to update quota cache', err),
+					);
+			}
 		}
 	}
 

@@ -24,11 +24,7 @@
 
 ---
 
-
-
 ## Goals & Scope
-
-
 
 ### In scope
 
@@ -40,16 +36,12 @@
 - README, `docs/`, Swagger (`/api`), and Postman collection
 - Atomic conventional commits with readable git history
 
-
-
 ### Out of scope (MVP)
 
 - Premium full-stack Frontend Web Application (React/Vite)
 - Firebase callable functions (`cancelSubscription`, `getPaystackConfig`, etc.)
 - Webhooks, SMS, Pro/Scale routes (documented as future work)
 - Exhaustive edge-case test coverage
-
-
 
 ### Evaluation criteria (from assignment brief)
 
@@ -63,8 +55,6 @@
 
 
 ---
-
-
 
 ## Architecture
 
@@ -98,8 +88,6 @@ flowchart LR
 
 
 
-
-
 ### Request lifecycle
 
 ```mermaid
@@ -122,8 +110,6 @@ sequenceDiagram
 
 
 
-
-
 ### Key design decisions
 
 
@@ -137,8 +123,6 @@ sequenceDiagram
 
 
 ---
-
-
 
 ## Tech Stack
 
@@ -158,8 +142,6 @@ sequenceDiagram
 
 
 ---
-
-
 
 ## Project Structure
 
@@ -217,11 +199,7 @@ WeatherAi-Assignment/
 
 ---
 
-
-
 ## API Surface
-
-
 
 ### Core routes (Day 1 priority)
 
@@ -250,16 +228,12 @@ WeatherAi-Assignment/
 | `GET /v1/trees/quota`    | `GET /v1/trees/quota`                |
 
 
-
-
 ### Deferred (document in README as future work)
 
 - `GET /v1/forecast14`, `GET /v1/insights`, `GET /v1/ip-lookup` (Pro+)
 - Webhooks CRUD (Pro+)
 - SMS routes (Scale + admin approval)
 - Firebase callable functions
-
-
 
 ### Proxy error shape
 
@@ -285,18 +259,12 @@ WeatherAi-Assignment/
 
 ---
 
-
-
 ## Rate Limiting & Caching
-
-
 
 ### Rate limiting (two layers)
 
 1. **Per-IP sliding window** — `@nestjs/throttler`, Redis store, ~60 req/min globally
 2. **Upstream quota guard** — `QuotaGuard` reads `X-RateLimit-Remaining`; short-circuit at < 5% remaining; refresh from `GET /v1/usage` every 5 min
-
-
 
 ### Caching
 
@@ -316,11 +284,7 @@ WeatherAi-Assignment/
 
 ---
 
-
-
 ## Implementation Phases & Todos
-
-
 
 ### Phase 0 — Prerequisites
 
@@ -330,8 +294,6 @@ WeatherAi-Assignment/
 - [x] **0.4** Confirm Free plan; note monthly limits (1K req, 200 AI req)
 
 ---
-
-
 
 ### Phase 1 — Project scaffold & git baseline
 
@@ -348,8 +310,6 @@ WeatherAi-Assignment/
 **Acceptance:** `npm run build` passes; `.env` is gitignored
 
 ---
-
-
 
 ### Phase 2 — Common infrastructure
 
@@ -370,8 +330,6 @@ WeatherAi-Assignment/
 
 ---
 
-
-
 ### Phase 3 — Weather & account modules
 
 **Branch:** `feat/weather` → merge to `main`  
@@ -390,8 +348,6 @@ WeatherAi-Assignment/
 
 ---
 
-
-
 ### Phase 4 — Redis cache & rate limiting
 
 **Branch:** `feat/redis` → merge to `main`  
@@ -409,8 +365,6 @@ WeatherAi-Assignment/
 
 ---
 
-
-
 ### Phase 5 — Dashboard aggregate
 
 **Branch:** `feat/dashboard` → merge to `main`  
@@ -421,30 +375,26 @@ WeatherAi-Assignment/
   - Parallel fetch: weather (`ai=false`), usage, trees quota
   - Normalize into single response object
   - Handle partial failures gracefully (e.g. trees quota unavailable)
-- [ ] **5.3** Merge to `main`
+- [x] **5.3** Merge to `main`
 
 **Acceptance:** One request returns combined weather + usage + quota payload
 
 ---
-
-
 
 ### Phase 6 — Farm Intelligence (Trees module)
 
 **Branch:** `feat/trees` → merge to `main`  
 **Commit:** `feat(trees): add tree analysis and quota routes`
 
-- [ ] **6.1** Create `TreesModule` with multipart upload support
-- [ ] **6.2** Implement `POST /v1/trees/analyze` — forward multipart to upstream
-- [ ] **6.3** Implement `GET /v1/trees/history`
-- [ ] **6.4** Implement `GET /v1/trees/quota`
+- [x] **6.1** Create `TreesModule` with multipart upload support
+- [x] **6.2** Implement `POST /v1/trees/analyze` — forward multipart to upstream
+- [x] **6.3** Implement `GET /v1/trees/history`
+- [x] **6.4** Implement `GET /v1/trees/quota`
 - [ ] **6.5** Merge to `main`
 
 **Acceptance:** Image upload returns analysis JSON; history and quota endpoints work
 
 ---
-
-
 
 ### Phase 7 — Documentation
 
@@ -462,8 +412,6 @@ WeatherAi-Assignment/
 **Acceptance:** Evaluator can clone, read README, import Postman, and hit Swagger without asking questions
 
 ---
-
-
 
 ### Phase 8 — Docker & deployment
 
@@ -487,8 +435,6 @@ WeatherAi-Assignment/
 
 ---
 
-
-
 ### Phase 9 — Premium Frontend UI (React/Vite)
 
 **Branch:** `feat/frontend` → merge to `main`  
@@ -507,8 +453,6 @@ WeatherAi-Assignment/
 
 ---
 
-
-
 ### Phase 10 — Stretch goals (only if ahead of schedule)
 
 - [ ] **10.1** `GET /v1/daily` and `GET /v1/hourly` proxy routes
@@ -517,11 +461,7 @@ WeatherAi-Assignment/
 
 ---
 
-
-
 ## Git History Strategy
-
-
 
 ### Branching model
 
@@ -532,8 +472,6 @@ WeatherAi-Assignment/
 | `feat/*`  | Feature work (weather, redis, dashboard, trees) |
 | `docs/*`  | Documentation-only changes                      |
 | `chore/*` | Docker, CI, tooling                             |
-
-
 
 
 ### Conventional Commits format
@@ -552,8 +490,6 @@ WeatherAi-Assignment/
 | `docs`     | `docs: add deployment and curl examples to README`  |
 | `chore`    | `chore: add Dockerfile and docker-compose`          |
 | `refactor` | `refactor(common): extract QuotaService from guard` |
-
-
 
 
 ### Planned commit sequence
@@ -577,8 +513,6 @@ WeatherAi-Assignment/
 16. chore: add Dockerfile and docker-compose for local dev
 17. chore: configure deployment for Railway/Render
 ```
-
-
 
 ### Git hygiene rules
 
@@ -611,11 +545,7 @@ gitGraph
 
 ---
 
-
-
 ## Documentation Deliverables
-
-
 
 ### README.md (required)
 
@@ -635,8 +565,6 @@ gitGraph
 | Future work           | Pro/Scale routes, webhooks, SMS                                           |
 
 
-
-
 ### docs/ARCHITECTURE.md
 
 - System context diagram
@@ -646,15 +574,11 @@ gitGraph
 - Deployment topology
 - Design decisions
 
-
-
 ### docs/API.md
 
 - Full endpoint reference with params and example JSON
 - Proxy error codes
 - Plan-gated route notes
-
-
 
 ### Postman
 
@@ -662,16 +586,12 @@ gitGraph
 - `postman/WeatherAI-Proxy.postman_environment.json`
 - Variables: `baseUrl`, `lat` (`-1.2921`), `lon` (`36.8219`)
 
-
-
 ### Swagger
 
 - Live at `/api` via `@nestjs/swagger`
 - All DTOs decorated with `@ApiProperty`
 
 ---
-
-
 
 ## Deployment Plan
 
@@ -685,8 +605,6 @@ flowchart LR
 
 
 
-
-
 ### Steps
 
 1. Push repository to GitHub
@@ -696,8 +614,6 @@ flowchart LR
 5. Configure environment variables (see below)
 6. Verify health and weather endpoints on live URL
 7. Update README with live URL
-
-
 
 ### 2-day schedule
 
@@ -709,8 +625,6 @@ flowchart LR
 
 
 ---
-
-
 
 ## Environment Variables
 
@@ -744,8 +658,6 @@ NODE_ENV=development
 
 ---
 
-
-
 ## Evaluation Mapping
 
 
@@ -758,8 +670,6 @@ NODE_ENV=development
 
 
 ---
-
-
 
 ## Risks & Mitigations
 
@@ -776,8 +686,6 @@ NODE_ENV=development
 
 ---
 
-
-
 ## Progress Tracker
 
 Use this summary to track overall completion:
@@ -791,7 +699,7 @@ Use this summary to track overall completion:
 | 3     | Weather & account           | ✅ Done        |
 | 4     | Redis cache & rate limiting | ✅ Done        |
 | 5     | Dashboard aggregate         | ✅ Done        |
-| 6     | Farm Intelligence (Trees)   | ⬜ Not started |
+| 6     | Trees module (stretch)      | ⬜ Not started |
 | 7     | Documentation               | ⬜ Not started |
 | 8     | Docker & deployment         | ⬜ Not started |
 | 9     | Premium Frontend UI         | ⬜ Not started |

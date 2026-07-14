@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { WeatherService } from '../weather/weather.service';
 import { AccountService } from '../account/account.service';
 import { WeatherAiClient } from '../common/weather-ai.client';

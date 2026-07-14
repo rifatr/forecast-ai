@@ -16,6 +16,7 @@ import { HealthModule } from './health/health.module';
 import { WeatherModule } from './weather/weather.module';
 import { AccountModule } from './account/account.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { TreesModule } from './trees/trees.module';
 
 @Module({
 	imports: [
@@ -25,6 +26,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 		WeatherModule,
 		AccountModule,
 		DashboardModule,
+		TreesModule,
 		CacheModule.registerAsync({
 			isGlobal: true,
 			imports: [NestConfigModule],
