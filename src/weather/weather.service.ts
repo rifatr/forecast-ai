@@ -7,6 +7,9 @@ import { CurrentWeatherQueryDto } from './dto/current-weather-query.dto';
 import {
 	WeatherAiResponse,
 	WeatherAiGeoResponse,
+	WeatherAiCurrentResponse,
+	WeatherAiDailyResponse,
+	WeatherAiHourlyResponse,
 } from '../common/interfaces/weather-ai.interface';
 
 @Injectable()
@@ -27,10 +30,30 @@ export class WeatherService {
 		);
 	}
 
-	async getCurrent(query: CurrentWeatherQueryDto): Promise<Partial<WeatherAiResponse>> {
-		return this.client.get<Partial<WeatherAiResponse>>(
+	async getDaily(query: WeatherQueryDto): Promise<WeatherAiDailyResponse> {
+		const res = await this.client.get<WeatherAiResponse>(
+			'/v1/daily',
+			query as unknown as Record<string, unknown>,
+		);
+		const { current, hourly, ...rest } = res;
+		return rest;
+	}
+
+	async getHourly(query: WeatherQueryDto): Promise<WeatherAiHourlyResponse> {
+		const res = await this.client.get<WeatherAiResponse>(
+			'/v1/hourly',
+			query as unknown as Record<string, unknown>,
+		);
+		const { current, daily, ...rest } = res;
+		return rest;
+	}
+
+	async getCurrent(query: CurrentWeatherQueryDto): Promise<WeatherAiCurrentResponse> {
+		const res = await this.client.get<WeatherAiResponse>(
 			'/v1/current',
 			query as unknown as Record<string, unknown>,
 		);
+		const { daily, hourly, days, ...rest } = res;
+		return rest;
 	}
 }

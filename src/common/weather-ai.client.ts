@@ -206,6 +206,22 @@ export class WeatherAiClient {
 				ai_summary: null,
 			} as unknown as T;
 		}
+		if (
+			endpoint.startsWith('/v1/daily') ||
+			endpoint.startsWith('/v1/hourly') ||
+			endpoint.startsWith('/v1/current')
+		) {
+			return {
+				lat: Number(params?.lat) || 0,
+				lon: Number(params?.lon) || 0,
+				units: 'metric',
+				days: 3,
+				current: { time: '2026-07-14T18:45', interval: 900, temperature: 21.1, windspeed: 9.3, winddirection: 81, is_day: 0, weathercode: 1 },
+				daily: [{ date: '2026-07-14', temp_max: 25.1, temp_min: 12.3, precipitation: 0, weathercode: 3 }],
+				hourly: [{ time: '2026-07-14T00:00', temp: 15.1, precipitation: 0, weathercode: 0 }],
+				ai_summary: null,
+			} as unknown as T;
+		}
 		if (endpoint.startsWith('/v1/usage')) {
 			return {
 				plan: 'free',

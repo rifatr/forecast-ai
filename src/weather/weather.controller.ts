@@ -37,6 +37,28 @@ export class WeatherController {
 		return this.weatherService.getWeatherGeo(query);
 	}
 
+	@Get('daily')
+	@ApiOperation({ summary: 'Get daily weather forecast only' })
+	@ApiResponse({
+		status: 200,
+		description: 'Daily forecast retrieved successfully',
+	})
+	@CacheTTL(300000) // 5 minutes
+	async getDaily(@Query() query: WeatherQueryDto) {
+		return this.weatherService.getDaily(query);
+	}
+
+	@Get('hourly')
+	@ApiOperation({ summary: 'Get hourly weather forecast only' })
+	@ApiResponse({
+		status: 200,
+		description: 'Hourly forecast retrieved successfully',
+	})
+	@CacheTTL(300000) // 5 minutes
+	async getHourly(@Query() query: WeatherQueryDto) {
+		return this.weatherService.getHourly(query);
+	}
+
 	@Get('current')
 	@ApiOperation({ summary: 'Get current weather conditions only' })
 	@ApiResponse({

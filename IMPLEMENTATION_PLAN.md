@@ -455,7 +455,7 @@ WeatherAi-Assignment/
 
 ### Phase 10 — Stretch goals (only if ahead of schedule)
 
-- [ ] **10.1** `GET /v1/daily` and `GET /v1/hourly` proxy routes
+- [x] **10.1** `GET /v1/daily` and `GET /v1/hourly` proxy routes
 - [ ] **10.2** Plan-gating middleware for Pro/Scale routes (403 with `requiredPlan`)
 - [ ] **10.3** Basic e2e test with `supertest`
 

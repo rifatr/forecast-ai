@@ -39,7 +39,17 @@ Retrieves weather forecasts for a specific coordinate. Caching is enabled.
 
 **Query Parameters:** Same as `/v1/dashboard`.
 
-### 3. `POST /v1/trees/analyze`
+### 3. `GET /v1/daily`
+Retrieves daily weather forecast only.
+
+**Query Parameters:** Same as `/v1/dashboard`.
+
+### 4. `GET /v1/hourly`
+Retrieves hourly weather forecast only.
+
+**Query Parameters:** Same as `/v1/dashboard`.
+
+### 5. `POST /v1/trees/analyze`
 Accepts a multipart form data upload containing a farm image to be analyzed for tree density and health.
 
 **Form Data Fields:**

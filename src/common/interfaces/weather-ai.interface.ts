@@ -48,6 +48,10 @@ export interface WeatherAiResponse {
 	ai_summary: string | null;
 }
 
+export type WeatherAiCurrentResponse = Omit<WeatherAiResponse, 'daily' | 'hourly' | 'days'>;
+export type WeatherAiHourlyResponse = Omit<WeatherAiResponse, 'current' | 'daily'>;
+export type WeatherAiDailyResponse = Omit<WeatherAiResponse, 'current' | 'hourly'>;
+
 export interface WeatherAiGeoResponse extends WeatherAiResponse {
 	geo: WeatherAiGeoData;
 }

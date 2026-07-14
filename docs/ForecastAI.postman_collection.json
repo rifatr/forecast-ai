@@ -97,6 +97,60 @@
 			}
 		},
 		{
+			"name": "Get Daily",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v1/daily?lat={{lat}}&lon={{lon}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"daily"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "{{lat}}"
+						},
+						{
+							"key": "lon",
+							"value": "{{lon}}"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Hourly",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v1/hourly?lat={{lat}}&lon={{lon}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"hourly"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "{{lat}}"
+						},
+						{
+							"key": "lon",
+							"value": "{{lon}}"
+						}
+					]
+				}
+			}
+		},
+		{
 			"name": "Usage Stats",
 			"request": {
 				"method": "GET",
