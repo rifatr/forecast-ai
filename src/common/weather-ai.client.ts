@@ -11,6 +11,7 @@ export class WeatherAiClient {
 	private readonly baseUrl: string;
 	private readonly apiKey: string;
 	private readonly mock: boolean;
+	private readonly mockTrees: boolean;
 
 	constructor(
 		private readonly httpService: HttpService,
@@ -20,6 +21,7 @@ export class WeatherAiClient {
 		this.baseUrl = this.configService.get<string>('wai.baseUrl')!;
 		this.apiKey = this.configService.get<string>('wai.apiKey')!;
 		this.mock = this.configService.get<boolean>('wai.mock')!;
+		this.mockTrees = this.configService.get<boolean>('wai.mockTrees')!;
 	}
 
 	async get<T>(
@@ -34,7 +36,7 @@ export class WeatherAiClient {
 		endpoint: string,
 		params?: Record<string, unknown>,
 	): Promise<{ data: T; headers: Record<string, any> }> {
-		if (this.mock) {
+		if (this.mock || (this.mockTrees && endpoint.startsWith('/v1/trees'))) {
 			return {
 				data: this.getMockResponse<T>(endpoint, params),
 				headers: {},
@@ -66,7 +68,7 @@ export class WeatherAiClient {
 		file: Express.Multer.File,
 		body?: Record<string, any>,
 	): Promise<T> {
-		if (this.mock) {
+		if (this.mock || (this.mockTrees && endpoint.startsWith('/v1/trees'))) {
 			return this.getMockResponse<T>(endpoint, body);
 		}
 

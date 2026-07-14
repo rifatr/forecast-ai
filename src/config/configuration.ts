@@ -3,9 +3,10 @@ export default () => ({
 	nodeEnv: process.env.NODE_ENV ?? 'development',
 	wai: {
 		apiKey: process.env.WAI_API_KEY,
+		baseUrl: process.env.WAI_BASE_URL ?? 'https://api.weather-ai.co',
 		plan: process.env.WAI_PLAN ?? 'free',
 		mock: process.env.WAI_MOCK === 'true',
-		baseUrl: process.env.WAI_BASE_URL ?? 'https://api.weather-ai.co',
+		mockTrees: process.env.WAI_MOCK_TREES === 'true',
 	},
 	redis: {
 		url: process.env.REDIS_URL ?? 'redis://localhost:6379',

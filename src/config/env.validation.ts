@@ -11,9 +11,10 @@ export const envValidationSchema = Joi.object({
 		then: Joi.optional().allow(''),
 		otherwise: Joi.required(),
 	}),
+	WAI_BASE_URL: Joi.string().uri().default('https://api.weather-ai.co'),
 	WAI_PLAN: Joi.string().valid('free', 'pro', 'scale').default('free'),
 	WAI_MOCK: Joi.boolean().truthy('true').falsy('false').default(false),
-	WAI_BASE_URL: Joi.string().uri().default('https://api.weather-ai.co'),
+	WAI_MOCK_TREES: Joi.boolean().truthy('true').falsy('false').default(true),
 
 	REDIS_URL: Joi.string().default('redis://localhost:6379'),
 
