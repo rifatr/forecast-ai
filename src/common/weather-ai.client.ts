@@ -91,6 +91,7 @@ export class WeatherAiClient {
 					.post<T>(`${this.baseUrl}${endpoint}`, formData, {
 						headers: {
 							Authorization: `Bearer ${this.apiKey}`,
+							'Content-Type': 'multipart/form-data',
 						},
 					})
 					.pipe(timeout(30000)),
@@ -130,14 +131,15 @@ export class WeatherAiClient {
 
 	private handleUpstreamError(error: unknown): never {
 		if (error instanceof AxiosError) {
+			const upstreamData = error.response?.data ? JSON.stringify(error.response.data) : '';
+			this.logger.error(`Upstream error: ${error.message} ${upstreamData}`);
 			if (error.response) {
 				const status = error.response.status;
 				if (status === 401 || status === 403) {
-					this.logger.error('Invalid API key or unauthorized access');
 					throw new HttpException(
 						{
-							code: 'UPSTREAM_UNAUTHORIZED',
-							message: 'Upstream unauthorized',
+							code: 'SERVICE_UNAVAILABLE',
+							message: 'Service is temporarily misconfigured',
 						},
 						HttpStatus.BAD_GATEWAY,
 					);
@@ -146,20 +148,27 @@ export class WeatherAiClient {
 					throw new HttpException(
 						{
 							code: 'RATE_LIMITED',
-							message: 'Upstream quota nearly exhausted',
-							retryAfter:
-								(error.response.headers['retry-after'] as
-									string | undefined) || 3600,
+							message: 'Service capacity reached. Please try again later.',
+							retryAfter: error.response.headers['retry-after'] || 3600,
 						},
 						HttpStatus.TOO_MANY_REQUESTS,
 					);
 				}
+				// Forward status but use generic messaging
+				throw new HttpException(
+					{
+						code: status === 400 ? 'BAD_REQUEST' : 'SERVICE_ERROR',
+						message: 'An error occurred while processing your request',
+					},
+					status,
+				);
 			}
 			throw new HttpException(
-				{ code: 'UPSTREAM_ERROR', message: 'WeatherAI API error' },
-				HttpStatus.BAD_GATEWAY,
+				{ code: 'GATEWAY_TIMEOUT', message: 'Service timeout' },
+				HttpStatus.GATEWAY_TIMEOUT,
 			);
 		}
+		this.logger.error('Internal error in WeatherAiClient', error);
 		throw new HttpException(
 			{ code: 'INTERNAL_SERVER_ERROR', message: 'Internal server error' },
 			HttpStatus.INTERNAL_SERVER_ERROR,

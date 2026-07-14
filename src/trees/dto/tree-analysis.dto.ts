@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, IsNumberString } from 'class-validator';
+import { IsOptional, IsString, IsNumberString, ValidateIf } from 'class-validator';
 
 export class TreeAnalysisDto {
 	@ApiPropertyOptional({ description: 'County or region' })
@@ -8,7 +8,7 @@ export class TreeAnalysisDto {
 	county?: string;
 
 	@ApiPropertyOptional({ description: 'Plot size in acres', type: 'string' })
-	@IsOptional()
+	@ValidateIf((o) => o.landAcres !== undefined && o.landAcres !== '')
 	@IsNumberString()
 	landAcres?: string;
 
