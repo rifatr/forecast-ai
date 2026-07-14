@@ -39,6 +39,11 @@
 - Simplified aggregate endpoint (`GET /v1/dashboard`)
 - README, `docs/`, Swagger (`/api`), and Postman collection
 - Atomic conventional commits with readable git history
+
+
+
+### Out of scope (MVP)
+
 - Premium full-stack Frontend Web Application (React/Vite)
 - Firebase callable functions (`cancelSubscription`, `getPaystackConfig`, etc.)
 - Webhooks, SMS, Pro/Scale routes (documented as future work)
@@ -395,10 +400,10 @@ WeatherAi-Assignment/
 - [x] **4.1** Add `docker-compose.yml` with Redis service
 - [x] **4.2** Configure `CacheModule` with Redis store and per-resource TTLs
 - [x] **4.3** Apply cache interceptor to weather and account routes
-- [ ] **4.4** Configure `ThrottlerModule` with Redis storage — 60 req/min per IP
-- [ ] **4.5** Create `QuotaService` — track upstream remaining from response headers
-- [ ] **4.6** Create `QuotaGuard` — return 429 when upstream quota critically low
-- [ ] **4.7** Merge to `main`
+- [x] **4.4** Configure `ThrottlerModule` with Redis storage — 60 req/min per IP
+- [x] **4.5** Create `QuotaService` — track upstream remaining from response headers
+- [x] **4.6** Create `SmartCacheInterceptor` — gracefully degrade (increase cache TTL) when quota drops
+- [x] **4.7** Merge to `main`
 
 **Acceptance:** Second identical weather request served from cache (verify via logs or header); 429 returned when throttled
 
@@ -411,8 +416,8 @@ WeatherAi-Assignment/
 **Branch:** `feat/dashboard` → merge to `main`  
 **Commit:** `feat(dashboard): add aggregated dashboard endpoint`
 
-- [ ] **5.1** Create `DashboardModule`
-- [ ] **5.2** Implement `GET /v1/dashboard?lat=&lon=`
+- [x] **5.1** Create `DashboardModule`
+- [x] **5.2** Implement `GET /v1/dashboard?lat=&lon=`
   - Parallel fetch: weather (`ai=false`), usage, trees quota
   - Normalize into single response object
   - Handle partial failures gracefully (e.g. trees quota unavailable)
@@ -784,8 +789,8 @@ Use this summary to track overall completion:
 | 1     | Scaffold & git baseline     | ✅ Done        |
 | 2     | Common infrastructure       | ✅ Done        |
 | 3     | Weather & account           | ✅ Done        |
-| 4     | Redis cache & rate limiting | ⬜ Not started |
-| 5     | Dashboard aggregate         | ⬜ Not started |
+| 4     | Redis cache & rate limiting | ✅ Done        |
+| 5     | Dashboard aggregate         | ✅ Done        |
 | 6     | Farm Intelligence (Trees)   | ⬜ Not started |
 | 7     | Documentation               | ⬜ Not started |
 | 8     | Docker & deployment         | ⬜ Not started |

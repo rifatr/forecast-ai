@@ -26,8 +26,19 @@ export class WeatherAiClient {
 		endpoint: string,
 		params?: Record<string, unknown>,
 	): Promise<T> {
+		const { data } = await this.getWithHeaders<T>(endpoint, params);
+		return data;
+	}
+
+	async getWithHeaders<T>(
+		endpoint: string,
+		params?: Record<string, unknown>,
+	): Promise<{ data: T; headers: Record<string, any> }> {
 		if (this.mock) {
-			return this.getMockResponse<T>(endpoint, params);
+			return {
+				data: this.getMockResponse<T>(endpoint, params),
+				headers: {},
+			};
 		}
 
 		try {
@@ -72,7 +83,7 @@ export class WeatherAiClient {
 				}
 			}
 
-			return data;
+			return { data, headers };
 		} catch (error) {
 			this.handleUpstreamError(error);
 		}

@@ -4,8 +4,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/http-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
+
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
 	const configService = app.get(ConfigService);
 	const port = configService.get<number>('port', 3001);
@@ -14,6 +16,10 @@ async function bootstrap() {
 		origin: true,
 		credentials: true,
 	});
+
+	// Trust the reverse proxy (Railway, Render, etc.) to securely parse X-Forwarded-For
+	// This ensures @Ip() returns the real client IP instead of the load balancer's IP
+	app.set('trust proxy', 1);
 
 	app.useGlobalPipes(
 		new ValidationPipe({

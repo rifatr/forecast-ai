@@ -16,10 +16,19 @@ export class WeatherService {
 	}
 
 	async getWeatherGeo(query: WeatherGeoQueryDto) {
-		return this.client.get(
+		const { data, headers } = await this.client.getWithHeaders(
 			'/v1/weather-geo',
 			query as unknown as Record<string, unknown>,
 		);
+
+		const geo: Record<string, string> = {};
+		if (headers) {
+			if (headers['x-country']) geo['country'] = headers['x-country'] as string;
+			if (headers['x-region'])  geo['region'] = headers['x-region'] as string;
+			if (headers['x-city'])    geo['city'] = headers['x-city'] as string;
+		}
+
+		return { weather: data, geo };
 	}
 
 	async getCurrent(query: CurrentWeatherQueryDto) {

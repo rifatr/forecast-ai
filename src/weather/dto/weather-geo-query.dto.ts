@@ -6,6 +6,7 @@ import { WeatherQueryDto } from './weather-query.dto';
 export class WeatherGeoQueryDto extends OmitType(WeatherQueryDto, [
 	'lat',
 	'lon',
+	'lang',
 ] as const) {
 	@ApiPropertyOptional({
 		description: 'IP to resolve (pass auto to detect from request)',

@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Ip, Query, UseInterceptors } from '@nestjs/common';
 import { CacheTTL } from '@nestjs/cache-manager';
 import { SmartCacheInterceptor } from '../common/smart-cache.interceptor';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -31,7 +31,9 @@ export class WeatherController {
 		description: 'Weather data retrieved successfully',
 	})
 	@CacheTTL(300000) // 5 minutes
-	async getWeatherGeo(@Query() query: WeatherGeoQueryDto) {
+	async getWeatherGeo(@Query() query: WeatherGeoQueryDto, @Ip() ip: string) {
+		// Use provided IP, or default to request IP, or 'auto' as final fallback
+		query.ip = query.ip || ip || 'auto';
 		return this.weatherService.getWeatherGeo(query);
 	}
 
