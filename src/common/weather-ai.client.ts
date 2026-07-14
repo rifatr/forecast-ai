@@ -67,8 +67,7 @@ export class WeatherAiClient {
 		body?: Record<string, any>,
 	): Promise<T> {
 		if (this.mock) {
-			this.logger.log(`Mocking multipart request to ${endpoint}`);
-			return { analysis: 'Healthy', confidence: 0.95 } as unknown as T;
+			return this.getMockResponse<T>(endpoint, body);
 		}
 
 		try {
@@ -180,16 +179,76 @@ export class WeatherAiClient {
 		params?: Record<string, unknown>,
 	): T {
 		this.logger.log(`Mocking request to ${endpoint}`);
+		if (endpoint.startsWith('/v1/weather-geo')) {
+			return {
+				lat: Number(params?.lat) || 0,
+				lon: Number(params?.lon) || 0,
+				units: 'metric',
+				days: 1,
+				current: { time: '2026-07-14T18:45', interval: 900, temperature: 21.1, windspeed: 9.3, winddirection: 81, is_day: 0, weathercode: 1 },
+				daily: [{ date: '2026-07-14', temp_max: 25.1, temp_min: 12.3, precipitation: 0, weathercode: 3 }],
+				hourly: [],
+				geo: { ip: '127.0.0.1', ip_version: 'v4', lat: Number(params?.lat) || 0, lon: Number(params?.lon) || 0, city: 'Mock City', region: 'Mock Region', country: 'MC', timezone: 'UTC', isp: null, asn: null, is_datacenter: false },
+				ai_summary: null,
+			} as unknown as T;
+		}
 		if (endpoint.startsWith('/v1/weather')) {
 			return {
-				current: { temp: 20, condition: 'Clear' },
-				location: { lat: params?.lat, lon: params?.lon },
+				lat: Number(params?.lat) || 0,
+				lon: Number(params?.lon) || 0,
+				units: 'metric',
+				days: 3,
+				current: { time: '2026-07-14T18:45', interval: 900, temperature: 21.1, windspeed: 9.3, winddirection: 81, is_day: 0, weathercode: 1 },
+				daily: [],
+				hourly: [],
+				ai_summary: null,
 			} as unknown as T;
 		}
 		if (endpoint.startsWith('/v1/usage')) {
 			return {
-				requests: 10,
+				plan: 'free',
+				used: 15,
 				limit: 1000,
+				remaining: 985,
+				unlimited: false,
+			} as unknown as T;
+		}
+		if (endpoint.startsWith('/v1/trees/quota')) {
+			return {
+				plan: 'pro',
+				used: 12,
+				limit: 100,
+				remaining: 88,
+				unlimited: false,
+				resets_at: '2026-07-01T00:00:00.000Z',
+			} as unknown as T;
+		}
+		if (endpoint.startsWith('/v1/trees/analyze')) {
+			return {
+				analysis_id: "Mock123",
+				timestamp: new Date().toISOString(),
+				farmer_id: params?.farmer_id || "F-MOCK",
+				county: params?.county || "Bomet",
+				location: params?.location || "Mock Location",
+				land_acres: Number(params?.land_acres) || 2.5,
+				total_tree_count: 84,
+				tree_density_per_acre: 33.6,
+				confidence_score: 0.87,
+				canopy_coverage_pct: 41.2,
+				tree_health: { healthy: 68, needs_care: 12, needs_replacement: 4 },
+				low_confidence: false,
+				tree_species_guess: "Tea",
+				observations: ["Dense canopy"],
+				recommendations: ["Thin section"],
+				original_image_url: "https://mock.com/orig.jpg",
+				overlay_image_url: "https://mock.com/over.jpg",
+				cv_debug: { orig_resolution: "4000x3000", work_resolution: "1500x1125", canopy_px: 412500, peaks_detected: 91, after_area_filter: 84 }
+			} as unknown as T;
+		}
+		if (endpoint.startsWith('/v1/trees/history')) {
+			return {
+				data: [],
+				next_cursor: null,
 			} as unknown as T;
 		}
 		return {} as T;

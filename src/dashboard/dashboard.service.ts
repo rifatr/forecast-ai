@@ -27,10 +27,10 @@ export class DashboardService {
 			this.treesService.getQuota(),
 		]);
 
-		const extract = (
-			res: PromiseSettledResult<unknown>,
+		const extract = <T>(
+			res: PromiseSettledResult<T>,
 			defaultMsg: string,
-		) =>
+		): T | { error: string } =>
 			res.status === 'fulfilled'
 				? res.value
 				: { error: (res.reason as Error)?.message ?? defaultMsg };
@@ -38,15 +38,24 @@ export class DashboardService {
 		const weatherPayload = extract(
 			weatherRes,
 			'Failed to load weather',
-		) as {
-			weather?: Record<string, unknown>;
-			geo?: Record<string, string>;
-			error?: string;
-		};
+		);
+
+		let weather = { error: 'Failed to load weather' };
+		let geo = { error: 'Failed to geological data' };
+
+		if ('current' in weatherPayload && 'geo' in weatherPayload) {
+			// weatherPayload is WeatherAiGeoResponse
+			const { geo: geoData, ...weatherData } = weatherPayload as any;
+			weather = weatherData;
+			geo = geoData;
+		} else if ('error' in weatherPayload) {
+			weather = { error: (weatherPayload as { error: string }).error };
+			geo = { error: (weatherPayload as { error: string }).error };
+		}
 
 		return {
-			weather: weatherPayload.weather ?? weatherPayload.error ?? { error: 'Failed to load weather' },
-			geo: weatherPayload.geo ?? { error: 'Failed to geological data' },
+			weather,
+			geo,
 			usage: extract(usageRes, 'Failed to load usage'),
 			treesQuota: extract(treesQuotaRes, 'Trees quota unavailable'),
 		};

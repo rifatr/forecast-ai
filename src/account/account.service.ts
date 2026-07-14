@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { WeatherAiClient } from '../common/weather-ai.client';
+import { WeatherAiUsageResponse } from '../common/interfaces/weather-ai.interface';
 
 @Injectable()
 export class AccountService {
 	constructor(private readonly client: WeatherAiClient) {}
 
-	async getUsage() {
-		return this.client.get('/v1/usage');
+	async getUsage(): Promise<WeatherAiUsageResponse> {
+		return this.client.get<WeatherAiUsageResponse>('/v1/usage');
 	}
 }
