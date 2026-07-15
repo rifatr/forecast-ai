@@ -1,9 +1,19 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Home } from './pages/Home';
 import { Account } from './pages/Account';
 
 function App() {
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'night') {
+      document.documentElement.classList.add('theme-night');
+    } else if (savedTheme === 'day') {
+      document.documentElement.classList.remove('theme-night');
+    }
+  }, []);
+
   return (
     <Router>
       <div className="app-wrapper">

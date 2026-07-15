@@ -23,16 +23,31 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
 
+  --glass-bg: rgba(255, 255, 255, 0.3);
+  --glass-bg-heavy: rgba(255, 255, 255, 0.5);
+  --glass-bg-hover: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-border-heavy: rgba(255, 255, 255, 0.6);
+  --glass-text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+
   --bg-image: url('/sky-bg.jpg');
 }
 
-body.theme-night {
+.theme-night body {
   --bg-secondary: rgba(0, 0, 0, 0.35);
   --bg-tertiary: rgba(0, 0, 0, 0.5);
   --border-color: rgba(255, 255, 255, 0.15);
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  
+  --glass-bg: rgba(0, 0, 0, 0.4);
+  --glass-bg-heavy: rgba(0, 0, 0, 0.6);
+  --glass-bg-hover: rgba(0, 0, 0, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-heavy: rgba(255, 255, 255, 0.2);
+  --glass-text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+
   --bg-image: url('/night-bg.jpg');
 }
 
@@ -74,10 +89,10 @@ body {
 }
 
 .navbar {
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--glass-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid var(--glass-border);
   padding: 0 2rem;
   height: 70px;
   display: flex;
@@ -124,9 +139,9 @@ body {
 
 .search-input {
   width: 100%;
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--glass-bg-heavy);
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--glass-border-heavy);
   border-radius: 999px;
   padding: 0.6rem 1rem 0.6rem 2.75rem;
   color: var(--text-primary);
@@ -137,9 +152,9 @@ body {
 
 .search-input:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--glass-bg-hover);
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px var(--glass-border);
 }
 
 .navbar-actions {
@@ -153,7 +168,7 @@ body {
   text-decoration: none;
   font-weight: 600;
   transition: var(--transition-fast);
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+  text-shadow: var(--glass-text-shadow);
 }
 
 .nav-link:hover, .nav-link.active {
@@ -161,7 +176,7 @@ body {
 }
 
 .profile-btn {
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--glass-bg-heavy);
   backdrop-filter: blur(8px);
   color: var(--text-primary);
   width: 40px;
@@ -171,12 +186,12 @@ body {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--glass-border-heavy);
   transition: var(--transition-fast);
 }
 
 .profile-btn:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--glass-bg-hover);
 }
 
 .main-container {
@@ -189,10 +204,10 @@ body {
 
 /* Components */
 .card {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--glass-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   box-shadow: var(--glass-shadow);

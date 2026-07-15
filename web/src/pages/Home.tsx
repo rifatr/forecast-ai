@@ -31,16 +31,13 @@ export function Home() {
   useEffect(() => {
     if (data?.current) {
       if (data.current.is_day === 0) {
-        document.body.classList.add('theme-night');
+        document.documentElement.classList.add('theme-night');
+        localStorage.setItem('theme', 'night');
       } else {
-        document.body.classList.remove('theme-night');
+        document.documentElement.classList.remove('theme-night');
+        localStorage.setItem('theme', 'day');
       }
     }
-    
-    // Cleanup on unmount
-    return () => {
-      document.body.classList.remove('theme-night');
-    };
   }, [data?.current?.is_day]);
 
   if (loading && !data) {
@@ -83,11 +80,11 @@ export function Home() {
         </div>
         
         <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '2rem', color: 'var(--text-secondary)', fontWeight: '600' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.4)', padding: '0.5rem 1rem', borderRadius: '999px', backdropFilter: 'blur(8px)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--glass-bg)', padding: '0.5rem 1rem', borderRadius: '999px', backdropFilter: 'blur(8px)' }}>
             <Wind size={20} />
             <span>{current?.windspeed} km/h</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.4)', padding: '0.5rem 1rem', borderRadius: '999px', backdropFilter: 'blur(8px)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--glass-bg)', padding: '0.5rem 1rem', borderRadius: '999px', backdropFilter: 'blur(8px)' }}>
             <Droplets size={20} />
             <span>Precipitation: 0%</span>
           </div>
