@@ -11,7 +11,7 @@ interface ForecastPanelsProps {
 }
 
 export function ForecastPanels({ currentTime, hourly, daily }: ForecastPanelsProps) {
-  const upcomingDays = daily.slice(1, 7);
+  const upcomingDays = daily.slice(1);
   const hourlyScrollRef = useRef<HTMLDivElement>(null);
   const dailyScrollRef = useRef<HTMLDivElement>(null);
 
@@ -74,58 +74,62 @@ export function ForecastPanels({ currentTime, hourly, daily }: ForecastPanelsPro
         </div>
       </section>
 
-      <section className="panel upcoming-forecast">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Plan ahead</p>
-            <h2>Next 6 days</h2>
+      {upcomingDays.length > 0 && (
+        <section className="panel upcoming-forecast">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Plan ahead</p>
+              <h2>
+                Next {upcomingDays.length} {upcomingDays.length === 1 ? 'day' : 'days'}
+              </h2>
+            </div>
+            <div className="scroll-controls" aria-label="Daily forecast controls">
+              <button
+                type="button"
+                className="scroll-button"
+                aria-label="Show earlier days"
+                onClick={() => scrollForecast(dailyScrollRef, 'previous')}
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                type="button"
+                className="scroll-button"
+                aria-label="Show later days"
+                onClick={() => scrollForecast(dailyScrollRef, 'next')}
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
           </div>
-          <div className="scroll-controls" aria-label="Daily forecast controls">
-            <button
-              type="button"
-              className="scroll-button"
-              aria-label="Show earlier days"
-              onClick={() => scrollForecast(dailyScrollRef, 'previous')}
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              type="button"
-              className="scroll-button"
-              aria-label="Show later days"
-              onClick={() => scrollForecast(dailyScrollRef, 'next')}
-            >
-              <ChevronRight size={18} />
-            </button>
+
+          <div ref={dailyScrollRef} className="daily-scroll">
+            {upcomingDays.map((day) => {
+              const condition = getWeatherCondition(day.weathercode);
+              const ConditionIcon = condition.Icon;
+
+              return (
+                <article className="daily-card" key={day.date}>
+                  <div>
+                    <strong>{formatDate(day.date, { weekday: 'short' })}</strong>
+                    <span>{formatDate(day.date, { month: 'short', day: 'numeric' })}</span>
+                  </div>
+                  <ConditionIcon className="daily-condition-icon" size={30} />
+                  <span className="daily-condition-label">{condition.label}</span>
+                  <span className="daily-precipitation">
+                    <Droplets size={14} />
+                    {day.precipitation}%
+                  </span>
+                  <div className="daily-temperatures">
+                    <span>{Math.round(day.temp_min)}°</span>
+                    <strong>{Math.round(day.temp_max)}°</strong>
+                  </div>
+                </article>
+              );
+            })}
           </div>
-        </div>
-
-        <div ref={dailyScrollRef} className="daily-scroll">
-          {upcomingDays.map((day) => {
-            const condition = getWeatherCondition(day.weathercode);
-            const ConditionIcon = condition.Icon;
-
-            return (
-              <article className="daily-card" key={day.date}>
-                <div>
-                  <strong>{formatDate(day.date, { weekday: 'short' })}</strong>
-                  <span>{formatDate(day.date, { month: 'short', day: 'numeric' })}</span>
-                </div>
-                <ConditionIcon className="daily-condition-icon" size={30} />
-                <span className="daily-condition-label">{condition.label}</span>
-                <span className="daily-precipitation">
-                  <Droplets size={14} />
-                  {day.precipitation}%
-                </span>
-                <div className="daily-temperatures">
-                  <span>{Math.round(day.temp_min)}°</span>
-                  <strong>{Math.round(day.temp_max)}°</strong>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
+        </section>
+      )}
     </>
   );
 }

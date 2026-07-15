@@ -43,3 +43,12 @@ export interface Coordinates {
   lat: string;
   lon: string;
 }
+
+export type TemperatureUnit = 'metric' | 'imperial';
+
+export interface ForecastOptions {
+  days: number;
+  ai: boolean;
+  units: TemperatureUnit;
+  lang: string;
+}

@@ -5,22 +5,27 @@ import {
   clearGoogleAutocompleteContainers,
 } from '../../lib/googlePlaces';
 import type { PlaceSelection } from '../../lib/googlePlaces';
+import type { ForecastOptions } from '../../types/weather';
+import { ForecastPreferences } from './ForecastPreferences';
 
 interface LocationSearchModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLocationSelected: (selection: PlaceSelection) => void;
+  onLocationSelected: (selection: PlaceSelection, options: ForecastOptions) => void;
+  options: ForecastOptions;
 }
 
 export function LocationSearchModal({
   isOpen,
   onClose,
   onLocationSelected,
+  options,
 }: LocationSearchModalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [selection, setSelection] = useState<PlaceSelection | null>(null);
   const [isLoadingGoogle, setIsLoadingGoogle] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [forecastOptions, setForecastOptions] = useState(options);
 
   useEffect(() => {
     if (!isOpen || !inputRef.current) {
@@ -33,6 +38,7 @@ export function LocationSearchModal({
     clearGoogleAutocompleteContainers();
     setSelection(null);
     setError(null);
+    setForecastOptions(options);
     setIsLoadingGoogle(true);
 
     void attachPlaceAutocomplete(
@@ -75,7 +81,7 @@ export function LocationSearchModal({
       detachAutocomplete?.();
       clearGoogleAutocompleteContainers();
     };
-  }, [isOpen]);
+  }, [isOpen, options]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -101,7 +107,7 @@ export function LocationSearchModal({
       return;
     }
 
-    onLocationSelected(selection);
+    onLocationSelected(selection, forecastOptions);
   }
 
   return (
@@ -159,6 +165,8 @@ export function LocationSearchModal({
             </span>
           </div>
         )}
+
+        <ForecastPreferences options={forecastOptions} onChange={setForecastOptions} />
 
         <div className="location-modal-actions">
           <button className="button-ghost" type="button" onClick={onClose}>

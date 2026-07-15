@@ -750,6 +750,91 @@ to {
   line-height:1.4;
 }
 
+.forecast-preferences {
+  display:grid;
+  gap:14px;
+  margin:22px 0 0;
+  padding:18px 0 0;
+  border:0;
+  border-top:1px solid var(--line);
+}
+
+.forecast-preferences legend {
+  padding:0;
+  color:var(--ink);
+  font-size:14px;
+  font-weight:800;
+}
+
+.forecast-preferences > p {
+  margin:-8px 0 0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+
+.forecast-preferences-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  color:var(--ink);
+  font-size:13px;
+  font-weight:700;
+}
+
+.unit-toggle {
+  display:flex;
+  padding:3px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--surface);
+}
+
+.unit-toggle button {
+  padding:7px 10px;
+  color:var(--muted);
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  font-size:12px;
+  font-weight:800;
+}
+
+.unit-toggle button.is-selected {
+  color:#fff;
+  background:var(--blue);
+}
+
+.insight-switch > span {
+  display:grid;
+  gap:3px;
+}
+
+.insight-switch small {
+  color:var(--muted);
+  font-size:11px;
+  font-weight:500;
+}
+
+.insight-switch input {
+  width:17px;
+  height:17px;
+  accent-color:var(--blue);
+}
+
+.forecast-duration select,
+.insight-language select {
+  min-width:126px;
+  padding:8px 10px;
+  color:var(--ink);
+  border:1px solid var(--line);
+  border-radius:9px;
+  background:var(--surface);
+  font:inherit;
+  font-size:12px;
+}
+
 .location-modal-actions {
   display:flex;
   justify-content:flex-end;

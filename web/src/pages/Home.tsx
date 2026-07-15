@@ -1,27 +1,31 @@
 import { useEffect, useState } from 'react';
 import { CloudRain, RefreshCw } from 'lucide-react';
-import { getWeather } from '../api/weather';
+import { DEFAULT_FORECAST_OPTIONS, getWeather } from '../api/weather';
 import { ForecastPanels } from '../components/weather/ForecastPanels';
 import { LocationSearchModal } from '../components/weather/LocationSearchModal';
 import { WeatherHero } from '../components/weather/WeatherHero';
 import type { PlaceSelection } from '../lib/googlePlaces';
 import { getLocationName, getNext24Hours } from '../lib/weather';
-import type { Coordinates, WeatherResponse } from '../types/weather';
+import type { Coordinates, ForecastOptions, WeatherResponse } from '../types/weather';
 
 export function Home() {
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<PlaceSelection | null>(null);
+  const [forecastOptions, setForecastOptions] = useState<ForecastOptions>(DEFAULT_FORECAST_OPTIONS);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLocating, setIsLocating] = useState(false);
   const [isLocationSearchOpen, setIsLocationSearchOpen] = useState(false);
 
-  async function loadWeather(nextCoordinates?: Coordinates) {
+  async function loadWeather(
+    nextCoordinates?: Coordinates,
+    nextOptions: ForecastOptions = forecastOptions,
+  ) {
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await getWeather(nextCoordinates);
+      const response = await getWeather(nextCoordinates, nextOptions);
       setWeather(response);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : 'Unable to load the forecast.');
@@ -40,10 +44,11 @@ export function Home() {
     }
   }, [weather]);
 
-  function handleLocationSelected(place: PlaceSelection) {
+  function handleLocationSelected(place: PlaceSelection, options: ForecastOptions) {
     setSelectedPlace(place);
+    setForecastOptions(options);
     setIsLocationSearchOpen(false);
-    void loadWeather(place.coordinates);
+    void loadWeather(place.coordinates, options);
   }
 
   function handleUseCurrentLocation() {
@@ -101,13 +106,14 @@ export function Home() {
 
   const locationName = selectedPlace?.label || getLocationName(weather.geo, weather.lat, weather.lon);
   const hourlyForecast = getNext24Hours(weather.hourly, weather.current.time);
-  const dailyForecast = weather.daily.slice(0, 7);
+  const dailyForecast = weather.daily.slice(0, forecastOptions.days);
 
   return (
     <div className="weather-page animate-fade-in">
       <WeatherHero
         weather={weather}
         locationName={locationName}
+        units={forecastOptions.units}
         isLoading={isLoading}
         isLocating={isLocating}
         onRefresh={() => void loadWeather(selectedPlace?.coordinates)}
@@ -127,6 +133,7 @@ export function Home() {
         isOpen={isLocationSearchOpen}
         onClose={() => setIsLocationSearchOpen(false)}
         onLocationSelected={handleLocationSelected}
+        options={forecastOptions}
       />
     </div>
   );

@@ -8,11 +8,12 @@ import {
   Wind,
 } from 'lucide-react';
 import { getWeatherCondition } from '../../lib/weather';
-import type { WeatherResponse } from '../../types/weather';
+import type { TemperatureUnit, WeatherResponse } from '../../types/weather';
 
 interface WeatherHeroProps {
   weather: WeatherResponse;
   locationName: string;
+  units: TemperatureUnit;
   isLoading: boolean;
   isLocating: boolean;
   onRefresh: () => void;
@@ -23,6 +24,7 @@ interface WeatherHeroProps {
 export function WeatherHero({
   weather,
   locationName,
+  units,
   isLoading,
   isLocating,
   onRefresh,
@@ -32,6 +34,8 @@ export function WeatherHero({
   const { current, daily } = weather;
   const condition = getWeatherCondition(current.weathercode);
   const ConditionIcon = condition.Icon;
+  const temperatureUnit = units === 'metric' ? 'C' : 'F';
+  const windUnit = units === 'metric' ? 'km/h' : 'mph';
 
   return (
     <section className="weather-hero">
@@ -74,7 +78,7 @@ export function WeatherHero({
         <div className="temperature-block">
           <span>{Math.round(current.temperature)}</span>
           <sup>°</sup>
-          <small>C</small>
+          <small>{temperatureUnit}</small>
         </div>
         <div className="condition-block">
           <ConditionIcon size={42} />
@@ -87,7 +91,7 @@ export function WeatherHero({
         <div>
           <Wind size={19} />
           <span>Wind</span>
-          <strong>{Math.round(current.windspeed)} km/h</strong>
+          <strong>{Math.round(current.windspeed)} {windUnit}</strong>
         </div>
         <div>
           <Droplets size={19} />
