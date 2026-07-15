@@ -6,6 +6,7 @@ import { LocationSearchModal } from '../components/weather/LocationSearchModal';
 import { WeatherHero } from '../components/weather/WeatherHero';
 import type { PlaceSelection } from '../lib/googlePlaces';
 import { getLocationName, getNext24Hours } from '../lib/weather';
+import { useTheme } from '../theme-context';
 import type {
   Coordinates,
   ForecastOptions,
@@ -39,6 +40,7 @@ function loadSavedForecastOptions(): ForecastOptions {
 }
 
 export function Home() {
+  const { setAutoThemeIsDay } = useTheme();
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<PlaceSelection | null>(null);
   const [forecastOptions, setForecastOptions] = useState<ForecastOptions>(loadSavedForecastOptions);
@@ -74,9 +76,9 @@ export function Home() {
 
   useEffect(() => {
     if (weather) {
-      document.documentElement.classList.toggle('theme-night', weather.current.is_day === 0);
+      setAutoThemeIsDay(weather.current.is_day === 1);
     }
-  }, [weather]);
+  }, [setAutoThemeIsDay, weather]);
 
   function handleLocationSelected(place: PlaceSelection, options: ForecastOptions) {
     setSelectedPlace(place);

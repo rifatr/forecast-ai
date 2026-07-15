@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { CloudSun, User } from 'lucide-react';
+import { ThemeSelector } from './ThemeSelector';
 
 export function Navbar() {
   return (
@@ -18,12 +19,16 @@ export function Navbar() {
           >
             Forecast
           </NavLink>
+
           <NavLink
             to="/farm"
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
           >
             Farm AI
           </NavLink>
+
+          <ThemeSelector />
+
           <NavLink to="/account" className="profile-btn" aria-label="Account">
             <User size={19} />
           </NavLink>
