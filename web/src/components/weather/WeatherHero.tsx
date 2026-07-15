@@ -56,6 +56,7 @@ export function WeatherHero({
             units={units}
             onChange={onUnitsChange}
             className="hero-unit-toggle"
+            disabled={isLoading}
           />
           <button
             className="icon-button"

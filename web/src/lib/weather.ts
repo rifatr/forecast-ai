@@ -44,7 +44,7 @@ export function getNext24Hours(hours: HourlyWeather[], currentTime: string): Hou
 
   return hours
     .filter((hour) => {
-    const hourTime = new Date(hour.time);
+      const hourTime = new Date(hour.time);
       return !Number.isNaN(hourTime.getTime()) && hourTime >= currentHour;
     })
     .sort((firstHour, secondHour) => new Date(firstHour.time).getTime() - new Date(secondHour.time).getTime())

@@ -153,9 +153,9 @@ export function Farm() {
 
       {analysis ? (
         <FarmAnalysisResult 
-			analysis={analysis} 
-			onAnalyzeAgain={handleAnalyzeAgain} 
-		/>
+          analysis={analysis} 
+          onAnalyzeAgain={handleAnalyzeAgain} 
+        />
       ) : (
         <FarmUploadForm
           details={details}
