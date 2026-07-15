@@ -1,98 +1,93 @@
-# ForecastAI Server
+# ForecastAI: Unified Full-Stack Platform
 
-NestJS backend server that provides aggregated weather, geological data, and farm intelligence features to client applications by integrating with the [WeatherAI API](https://weather-ai.co/docs). It acts as a secure, standalone backend that maintains the WeatherAI API key server-side while extending functionality with custom dashboards, smart caching, rate-limiting, and multipart file handling.
+A complete, production-ready Full-Stack application integrating with the [WeatherAI API](https://weather-ai.co/docs). It features a highly optimized NestJS backend proxy and a premium, glassmorphism-themed React (Vite) frontend—all deployed seamlessly in a single unified Docker container.
 
-## Architecture & Highlights (Evaluation Mapping)
+## Architecture & Monorepo Structure
 
-This project was built to satisfy all core requirements of the WeatherAI backend assignment:
+This project is structured as a Monorepo to provide clean separation of concerns while maintaining a frictionless, unified deployment pipeline.
 
-| Criterion | How this project delivers |
-|---|---|
-| **Core functionality** | Fully integrates the live WeatherAI API (`WAI_MOCK=false`). The custom `GET /v1/dashboard` route aggregates weather, geo, usage, and tree quotas into a single response, radically simplifying client integrations. |
-| **Code quality & architecture** | Built on NestJS using strict Module boundaries, Dependency Injection, and typed DTOs with `class-validator`. Features a robust `SmartCacheInterceptor` that dynamically adjusts TTLs based on upstream quota constraints (`X-RateLimit-*`). |
-| **Deployment & documentation** | Containerized with `Dockerfile` and `docker-compose.yml`. Includes a comprehensive `README`, an interactive Swagger UI (`/api`), Postman collections (`docs/`), and architectural diagrams (`docs/ARCHITECTURE.md`). |
-| **Professional signal** | Clean Git history using Conventional Commits (`feat(module): ...`). Includes atomic commits that tell a clear implementation story from scaffold to deployment. |
-
-## Features
-
-- **Aggregated Dashboard**: Custom `/v1/dashboard` endpoint that concurrently aggregates weather, geological IP data, account usage, and farm intelligence quotas into a single unified payload.
-- **Secure Integration**: Hides the upstream `WAI_API_KEY` from end users while providing seamless access to WeatherAI services.
-- **Smart Adaptive Caching**: Dynamically reduces cache TTLs based on upstream rate limit quotas to preserve the API key's rate limits.
-- **Farm Intelligence**: Proxies multipart/form-data for the Gemini-powered tree analysis endpoint.
-- **Swagger Documentation**: Interactive OpenAPI documentation.
-
-
-
-## Prerequisites
-
-- Node.js 20+
-- npm
-- WeatherAI API key from [weather-ai.co](https://weather-ai.co) (optional if `WAI_MOCK=true`)
-- Redis server (optional; defaults to in-memory cache if missing)
-
-
-
-## Quick start
-
-First, set up your environment variables:
-```bash
-cp .env.example .env
-# Edit .env and set your WAI_API_KEY (or set WAI_MOCK=true for mock responses)
+```text
+forecast-ai/
+  ├── server/    # NestJS Backend API Proxy (Smart Caching, Rate Limiting)
+  ├── web/       # React Vite Frontend (Premium Dashboard UI)
+  ├── Dockerfile # Multi-stage root build for unified deployment
+  └── docker-compose.yml
 ```
 
-### Option A: Using Docker Compose (Recommended)
-This is the easiest way to run the application, as it automatically provisions the Node server and a dedicated Redis instance linked together.
+### The "Unified Container" Deployment Strategy
+Instead of paying for and managing two separate servers (one for the frontend, one for the backend), this project uses a powerful **Multi-Stage Docker Build**. 
+1. The `Dockerfile` compiles the React `web` app into optimized static files.
+2. It compiles the NestJS `server` app.
+3. It bundles them into a single Alpine Node image where **NestJS securely serves the React frontend** alongside its API routes.
 
+---
+
+## 🚀 Quick Start (Local Development)
+
+For local development, we run the frontend and backend natively for **Instant Hot-Reloading** (bypassing the slow Docker build process), while using Docker strictly to spin up a local Redis database.
+
+### 1. Initial Setup
 ```bash
-# Build and start the containers in detached mode
-docker compose up -d --build
+# Copy the environment template inside the server
+cp server/.env.example server/.env
 
-# View logs
-docker compose logs -f
+# Open server/.env and add your real WAI_API_KEY
 ```
-The server will be available at `http://localhost:3001`.
 
-### Option B: Local Node.js (Requires Local Redis)
-If you prefer running the application directly on your machine without Docker, ensure you have an instance of Redis running locally.
-
+### 2. Start the Local Database (Redis)
+From the root directory:
 ```bash
-# Install dependencies
+docker-compose up redis -d
+```
+
+### 3. Start the Backend API (Terminal 1)
+```bash
+cd server
 npm install
-
-# Start local Redis (if you have redis-server installed)
-redis-server &
-
-# Run the app in development mode
 npm run start:dev
 ```
-The server will be available at `http://localhost:3001`.
+*API is now running on `http://localhost:3001/v1/...`*
 
-Server listens on `http://localhost:3001` (or `PORT` from `.env`).
+### 4. Start the React Frontend (Terminal 2)
+```bash
+cd web
+npm install
+npm run dev
+```
+*Frontend is now running on `http://localhost:5173` with instant Hot Module Replacement.*
 
-Explore the interactive API documentation at: **[http://localhost:3001/api](http://localhost:3001/api)**
+---
 
-## Available API Routes
+## 🌍 Production Deployment
 
+Deploying to production (DigitalOcean App Platform, Render, Railway, etc.) is entirely automated.
 
-| Route               | Method | Purpose                                    |
-| ------------------- | ------ | ------------------------------------------ |
-| `/v1/weather`       | `GET`  | Current conditions and forecast retrieval  |
-| `/v1/current`       | `GET`  | Current conditions only                    |
-| `/v1/daily`         | `GET`  | Daily forecast data only                   |
-| `/v1/hourly`        | `GET`  | Hourly forecast data only                  |
-| `/v1/weather-geo`   | `GET`  | Weather conditions with geological IP data |
-| `/v1/dashboard`     | `GET`  | Aggregated weather, geo, usage, and quota  |
-| `/v1/usage`         | `GET`  | Upstream API usage limits                  |
-| `/v1/trees/analyze` | `POST` | AI farm analysis (multipart/form-data)     |
-| `/v1/trees/history` | `GET`  | Paginated tree analysis history            |
-| `/v1/trees/quota`   | `GET`  | Tree analysis quota remaining              |
-| `/health`           | `GET`  | System health check                        |
+1. Connect your hosting provider to this GitHub repository.
+2. Ensure the **Source Directory** is set to the repository root (`/`).
+3. The platform will automatically execute the root `Dockerfile`.
+4. Inject your Environment Variables into the hosting platform:
+   - `WAI_API_KEY=wai_...`
+   - `REDIS_URL=redis://...` (from Upstash)
+   - `NODE_ENV=production`
 
+The single container will spin up, serving both your gorgeous React Frontend on the root path `/` and your secure API on `/v1/*`.
 
+---
 
+## Backend Highlights (NestJS)
+- **Aggregated Dashboard**: Custom `/v1/dashboard` endpoint concurrently aggregates weather, geological IP data, account usage, and farm intelligence quotas into a single unified payload.
+- **Secure Integration**: Hides the upstream `WAI_API_KEY` from end users while providing seamless access to WeatherAI services.
+- **Smart Adaptive Caching**: Dynamically reduces cache TTLs based on upstream rate limit quotas to preserve the API key's rate limits.
+- **Serve Static Module**: Configured to serve the built React application while protecting `/v1` and `/health` routes.
 
-## Environment variables
+## Frontend Highlights (React + Vite)
+- **Premium Aesthetics**: Built with a custom Vanilla CSS Design System (`index.css`) featuring deep dark modes, dynamic ambient glows, and frosted glassmorphism components.
+- **Lightning Fast**: Powered by Vite and React 18.
+- **Component Driven**: Modular, scalable architecture ready to consume the `/v1/dashboard` proxy endpoints.
 
+---
+
+## Environment Variables (`server/.env`)
 
 | Variable         | Required | Default                     | Description                                   |
 | ---------------- | -------- | --------------------------- | --------------------------------------------- |
@@ -100,51 +95,5 @@ Explore the interactive API documentation at: **[http://localhost:3001/api](http
 | `WAI_PLAN`       | No       | `free`                      | `free` | `pro` | `scale`                      |
 | `WAI_MOCK`       | No       | `false`                     | Skip real upstream calls and return mock data |
 | `WAI_MOCK_TREES` | No       | `true`                      | Use mock data specifically for trees endpoints|
-| `WAI_BASE_URL`   | No       | `https://api.weather-ai.co` | Upstream API base URL                         |
 | `REDIS_URL`      | No       | `redis://localhost:6379`    | Redis connection string                       |
 | `PORT`           | No       | `3001`                      | HTTP port                                     |
-| `NODE_ENV`       | No       | `development`               | `development` | `production` | `test`         |
-| `THROTTLE_TTL`   | No       | `60000`                     | Rate-limit window (ms)                        |
-| `THROTTLE_LIMIT` | No       | `15`                        | Max requests per window per IP                |
-| `ADAPTIVE_CACHE_*`| No      | (various)                   | Thresholds/multipliers for SmartCache         |
-
-
- *Not required when* `WAI_MOCK=true`*.*
-
-## Architecture
-
-```mermaid
-graph TD
-    Client((Client App)) -->|HTTP Requests| API[ForecastAI NestJS Server]
-    API -->|Validates IP/Rate Limits| Throttler[Throttler Guard]
-    Throttler -->|Checks Cache| SmartCache[SmartCache Interceptor]
-    SmartCache -->|Cache Hit| Client
-    SmartCache -->|Cache Miss| Services[Domain Services]
-    
-    Services -->|Weather, Trees, Account| WAIClient[WeatherAiClient]
-    WAIClient -->|Injects WAI_API_KEY| Upstream[(WeatherAI API)]
-    
-    WAIClient -->|Extracts X-RateLimit| QuotaService[QuotaService]
-    QuotaService -->|Dynamically Adjusts TTL| SmartCache
-```
-
-
-
-
-
-## Scripts
-
-
-| Command              | Description        |
-| -------------------- | ------------------ |
-| `npm run start:dev`  | Watch mode         |
-| `npm run build`      | Compile to `dist/` |
-| `npm run start:prod` | Run compiled app   |
-| `npm run lint`       | ESLint             |
-
-
-
-
-## License
-
-Private — assignment project.
