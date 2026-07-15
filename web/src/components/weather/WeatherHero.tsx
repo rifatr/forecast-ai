@@ -9,11 +9,13 @@ import {
 } from 'lucide-react';
 import { getWeatherCondition } from '../../lib/weather';
 import type { TemperatureUnit, WeatherResponse } from '../../types/weather';
+import { UnitToggle } from './UnitToggle';
 
 interface WeatherHeroProps {
   weather: WeatherResponse;
   locationName: string;
   units: TemperatureUnit;
+  onUnitsChange: (units: TemperatureUnit) => void;
   isLoading: boolean;
   isLocating: boolean;
   onRefresh: () => void;
@@ -25,6 +27,7 @@ export function WeatherHero({
   weather,
   locationName,
   units,
+  onUnitsChange,
   isLoading,
   isLocating,
   onRefresh,
@@ -49,6 +52,11 @@ export function WeatherHero({
         </div>
 
         <div className="hero-actions">
+          <UnitToggle
+            units={units}
+            onChange={onUnitsChange}
+            className="hero-unit-toggle"
+          />
           <button
             className="icon-button"
             type="button"

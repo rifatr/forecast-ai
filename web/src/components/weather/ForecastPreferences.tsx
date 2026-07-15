@@ -1,4 +1,5 @@
 import type { ForecastOptions } from '../../types/weather';
+import { UnitToggle } from './UnitToggle';
 
 interface ForecastPreferencesProps {
   options: ForecastOptions;
@@ -8,7 +9,6 @@ interface ForecastPreferencesProps {
 const insightLanguages = [
   { code: 'en', label: 'English' },
   { code: 'bn', label: 'Bengali' },
-  { code: 'sw', label: 'Swahili' },
 ];
 
 export function ForecastPreferences({ options, onChange }: ForecastPreferencesProps) {
@@ -37,30 +37,16 @@ export function ForecastPreferences({ options, onChange }: ForecastPreferencesPr
 
       <div className="forecast-preferences-row">
         <span>Units</span>
-        <div className="unit-toggle" aria-label="Temperature and wind units">
-          <button
-            className={options.units === 'metric' ? 'is-selected' : ''}
-            type="button"
-            aria-pressed={options.units === 'metric'}
-            onClick={() => updateOptions({ units: 'metric' })}
-          >
-            Metric
-          </button>
-          <button
-            className={options.units === 'imperial' ? 'is-selected' : ''}
-            type="button"
-            aria-pressed={options.units === 'imperial'}
-            onClick={() => updateOptions({ units: 'imperial' })}
-          >
-            Imperial
-          </button>
-        </div>
+        <UnitToggle
+          units={options.units}
+          onChange={(units) => updateOptions({ units })}
+        />
       </div>
 
       <label className="forecast-preferences-row insight-switch">
         <span>
           <strong>AI forecast insight</strong>
-          <small>Include an API-generated summary for this location.</small>
+          <small>Include an AI-generated summary for this location.</small>
         </span>
         <input
           checked={options.ai}

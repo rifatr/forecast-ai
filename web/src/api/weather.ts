@@ -3,7 +3,7 @@ import { requestApi } from './client';
 
 export const DEFAULT_FORECAST_OPTIONS: ForecastOptions = {
   days: 7,
-  ai: true,
+  ai: false,
   units: 'metric',
   lang: 'en',
 };

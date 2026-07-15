@@ -806,6 +806,20 @@ to {
   background:var(--blue);
 }
 
+.hero-unit-toggle {
+  border-color:rgba(255,255,255,.26);
+  background:rgba(16,61,156,.2);
+}
+
+.hero-unit-toggle button {
+  color:rgba(255,255,255,.78);
+}
+
+.hero-unit-toggle button.is-selected {
+  color:#17438f;
+  background:#fff;
+}
+
 .insight-switch > span {
   display:grid;
   gap:3px;

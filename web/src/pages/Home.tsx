@@ -6,12 +6,42 @@ import { LocationSearchModal } from '../components/weather/LocationSearchModal';
 import { WeatherHero } from '../components/weather/WeatherHero';
 import type { PlaceSelection } from '../lib/googlePlaces';
 import { getLocationName, getNext24Hours } from '../lib/weather';
-import type { Coordinates, ForecastOptions, WeatherResponse } from '../types/weather';
+import type {
+  Coordinates,
+  ForecastOptions,
+  TemperatureUnit,
+  WeatherResponse,
+} from '../types/weather';
+
+const FORECAST_PREFERENCES_STORAGE_KEY = 'forecast-ai:forecast-preferences';
+
+function loadSavedForecastOptions(): ForecastOptions {
+  try {
+    const savedValue = window.localStorage.getItem(FORECAST_PREFERENCES_STORAGE_KEY);
+
+    if (!savedValue) {
+      return DEFAULT_FORECAST_OPTIONS;
+    }
+
+    const savedOptions = JSON.parse(savedValue) as Partial<ForecastOptions>;
+    const days = Number(savedOptions.days);
+    const units = savedOptions.units === 'imperial' ? 'imperial' : 'metric';
+
+    return {
+      days: days >= 1 && days <= 7 ? days : DEFAULT_FORECAST_OPTIONS.days,
+      ai: typeof savedOptions.ai === 'boolean' ? savedOptions.ai : DEFAULT_FORECAST_OPTIONS.ai,
+      units,
+      lang: typeof savedOptions.lang === 'string' ? savedOptions.lang : DEFAULT_FORECAST_OPTIONS.lang,
+    };
+  } catch {
+    return DEFAULT_FORECAST_OPTIONS;
+  }
+}
 
 export function Home() {
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<PlaceSelection | null>(null);
-  const [forecastOptions, setForecastOptions] = useState<ForecastOptions>(DEFAULT_FORECAST_OPTIONS);
+  const [forecastOptions, setForecastOptions] = useState<ForecastOptions>(loadSavedForecastOptions);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLocating, setIsLocating] = useState(false);
@@ -39,6 +69,10 @@ export function Home() {
   }, []);
 
   useEffect(() => {
+    window.localStorage.setItem(FORECAST_PREFERENCES_STORAGE_KEY, JSON.stringify(forecastOptions));
+  }, [forecastOptions]);
+
+  useEffect(() => {
     if (weather) {
       document.documentElement.classList.toggle('theme-night', weather.current.is_day === 0);
     }
@@ -49,6 +83,16 @@ export function Home() {
     setForecastOptions(options);
     setIsLocationSearchOpen(false);
     void loadWeather(place.coordinates, options);
+  }
+
+  function handleUnitsChange(units: TemperatureUnit) {
+    if (units === forecastOptions.units) {
+      return;
+    }
+
+    const nextOptions = { ...forecastOptions, units };
+    setForecastOptions(nextOptions);
+    void loadWeather(selectedPlace?.coordinates, nextOptions);
   }
 
   function handleUseCurrentLocation() {
@@ -114,6 +158,7 @@ export function Home() {
         weather={weather}
         locationName={locationName}
         units={forecastOptions.units}
+        onUnitsChange={handleUnitsChange}
         isLoading={isLoading}
         isLocating={isLocating}
         onRefresh={() => void loadWeather(selectedPlace?.coordinates)}
