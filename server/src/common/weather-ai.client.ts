@@ -108,7 +108,8 @@ export class WeatherAiClient {
 
 	private captureRateLimit(headers: Record<string, any>) {
 		const limit = headers['x-ratelimit-limit'] as string | undefined;
-		const remaining = headers['x-ratelimit-remaining'] as string | undefined;
+		const remaining = headers['x-ratelimit-remaining'] as
+			string | undefined;
 		const resetOn = headers['x-ratelimit-reset'] as string | undefined;
 
 		if (remaining || limit || resetOn) {
@@ -132,8 +133,12 @@ export class WeatherAiClient {
 
 	private handleUpstreamError(error: unknown): never {
 		if (error instanceof AxiosError) {
-			const upstreamData = error.response?.data ? JSON.stringify(error.response.data) : '';
-			this.logger.error(`Upstream error: ${error.message} ${upstreamData}`);
+			const upstreamData = error.response?.data
+				? JSON.stringify(error.response.data)
+				: '';
+			this.logger.error(
+				`Upstream error: ${error.message} ${upstreamData}`,
+			);
 			if (error.response) {
 				const status = error.response.status;
 				if (status === 401 || status === 403) {
@@ -149,8 +154,10 @@ export class WeatherAiClient {
 					throw new HttpException(
 						{
 							code: 'RATE_LIMITED',
-							message: 'Service capacity reached. Please try again later.',
-							retryAfter: error.response.headers['retry-after'] || 3600,
+							message:
+								'Service capacity reached. Please try again later.',
+							retryAfter:
+								error.response.headers['retry-after'] || 3600,
 						},
 						HttpStatus.TOO_MANY_REQUESTS,
 					);
@@ -159,7 +166,8 @@ export class WeatherAiClient {
 				throw new HttpException(
 					{
 						code: status === 400 ? 'BAD_REQUEST' : 'SERVICE_ERROR',
-						message: 'An error occurred while processing your request',
+						message:
+							'An error occurred while processing your request',
 					},
 					status,
 				);
@@ -181,32 +189,69 @@ export class WeatherAiClient {
 		params?: Record<string, unknown>,
 	): T {
 		this.logger.log(`Mocking request to ${endpoint}`);
+		const mockCurrentTime = new Date();
+		mockCurrentTime.setMinutes(45, 0, 0);
+		const mockCurrentHour = new Date(mockCurrentTime);
+		mockCurrentHour.setMinutes(0, 0, 0);
+		const mockDailyForecast = Array.from({ length: 7 }).map((_, index) => {
+			const date = new Date(mockCurrentHour);
+			date.setDate(date.getDate() + index);
+			return {
+				date: date.toISOString().split('T')[0],
+				temp_max: 20 + Math.random() * 10,
+				temp_min: 10 + Math.random() * 5,
+				precipitation: Math.floor(Math.random() * 20),
+				weathercode: Math.floor(Math.random() * 4),
+			};
+		});
+		const mockHourlyForecast = Array.from({ length: 48 }).map(
+			(_, index) => {
+				const time = new Date(mockCurrentHour);
+				time.setHours(time.getHours() + index);
+				return {
+					time: time.toISOString(),
+					temp: 20 + Math.random() * 5,
+					precipitation: 0,
+					weathercode: 3,
+				};
+			},
+		);
+		const mockCurrent = {
+			time: mockCurrentTime.toISOString(),
+			interval: 900,
+			temperature: 21.1,
+			windspeed: 9.3,
+			winddirection: 81,
+			is_day:
+				mockCurrentTime.getHours() >= 6 &&
+				mockCurrentTime.getHours() < 18
+					? 1
+					: 0,
+			weathercode: 1,
+		};
 		if (endpoint.startsWith('/v1/weather-geo')) {
 			return {
 				lat: Number(params?.lat) || 0,
 				lon: Number(params?.lon) || 0,
 				units: 'metric',
 				days: 2,
-				current: { time: '2026-07-14T8:45', interval: 900, temperature: 21.1, windspeed: 9.3, winddirection: 81, is_day: 0, weathercode: 1 },
-				daily: Array.from({ length: 7 }).map((_, i) => {
-					const d = new Date('2026-07-15');
-					d.setDate(d.getDate() + i);
-					return {
-						date: d.toISOString().split('T')[0],
-						temp_max: 20 + Math.random() * 10,
-						temp_min: 10 + Math.random() * 5,
-						precipitation: Math.floor(Math.random() * 20),
-						weathercode: Math.floor(Math.random() * 4)
-					};
-				}),
-				hourly: Array.from({ length: 24 }).map((_, i) => ({
-					time: `2026-07-15T${i.toString().padStart(2, '0')}:00`,
-					temp: 20 + Math.random() * 5,
-					precipitation: 0,
-					weathercode: 3
-				})),
-				geo: { ip: '127.0.0.1', ip_version: 'v4', lat: Number(params?.lat) || 0, lon: Number(params?.lon) || 0, city: 'Mock City', region: 'Mock Region', country: 'MC', timezone: 'UTC', isp: null, asn: null, is_datacenter: false },
-				ai_summary: "The weather is looking good. Sunny and bright",
+				current: mockCurrent,
+				daily: mockDailyForecast,
+				hourly: mockHourlyForecast,
+				geo: {
+					ip: '127.0.0.1',
+					ip_version: 'v4',
+					lat: Number(params?.lat) || 0,
+					lon: Number(params?.lon) || 0,
+					city: 'Mock City',
+					region: 'Mock Region',
+					country: 'MC',
+					timezone: 'UTC',
+					isp: null,
+					asn: null,
+					is_datacenter: false,
+				},
+				ai_summary: 'The weather is looking good. Sunny and bright',
 			} as unknown as T;
 		}
 		if (endpoint.startsWith('/v1/weather')) {
@@ -215,19 +260,9 @@ export class WeatherAiClient {
 				lon: Number(params?.lon) || 0,
 				units: 'metric',
 				days: 3,
-				current: { time: '2026-07-14T18:45', interval: 900, temperature: 21.1, windspeed: 9.3, winddirection: 81, is_day: 0, weathercode: 1 },
-				daily: Array.from({ length: 7 }).map((_, i) => {
-					const d = new Date('2026-07-15');
-					d.setDate(d.getDate() + i);
-					return {
-						date: d.toISOString().split('T')[0],
-						temp_max: 20 + Math.random() * 10,
-						temp_min: 10 + Math.random() * 5,
-						precipitation: Math.floor(Math.random() * 20),
-						weathercode: Math.floor(Math.random() * 4)
-					};
-				}),
-				hourly: [],
+				current: mockCurrent,
+				daily: mockDailyForecast,
+				hourly: mockHourlyForecast,
 				ai_summary: null,
 			} as unknown as T;
 		}
@@ -241,9 +276,32 @@ export class WeatherAiClient {
 				lon: Number(params?.lon) || 0,
 				units: 'metric',
 				days: 3,
-				current: { time: '2026-07-14T18:45', interval: 900, temperature: 21.1, windspeed: 9.3, winddirection: 81, is_day: 0, weathercode: 1 },
-				daily: [{ date: '2026-07-14', temp_max: 25.1, temp_min: 12.3, precipitation: 0, weathercode: 3 }],
-				hourly: [{ time: '2026-07-14T00:00', temp: 15.1, precipitation: 0, weathercode: 0 }],
+				current: {
+					time: '2026-07-14T18:45',
+					interval: 900,
+					temperature: 21.1,
+					windspeed: 9.3,
+					winddirection: 81,
+					is_day: 0,
+					weathercode: 1,
+				},
+				daily: [
+					{
+						date: '2026-07-14',
+						temp_max: 25.1,
+						temp_min: 12.3,
+						precipitation: 0,
+						weathercode: 3,
+					},
+				],
+				hourly: [
+					{
+						time: '2026-07-14T00:00',
+						temp: 15.1,
+						precipitation: 0,
+						weathercode: 0,
+					},
+				],
 				ai_summary: null,
 			} as unknown as T;
 		}
@@ -268,24 +326,34 @@ export class WeatherAiClient {
 		}
 		if (endpoint.startsWith('/v1/trees/analyze')) {
 			return {
-				analysis_id: "Mock123",
+				analysis_id: 'Mock123',
 				timestamp: new Date().toISOString(),
-				farmer_id: params?.farmer_id || "F-MOCK",
-				county: params?.county || "Bomet",
-				location: params?.location || "Mock Location",
+				farmer_id: params?.farmer_id || 'F-MOCK',
+				county: params?.county || 'Bomet',
+				location: params?.location || 'Mock Location',
 				land_acres: Number(params?.land_acres) || 2.5,
 				total_tree_count: 84,
 				tree_density_per_acre: 33.6,
 				confidence_score: 0.87,
 				canopy_coverage_pct: 41.2,
-				tree_health: { healthy: 68, needs_care: 12, needs_replacement: 4 },
+				tree_health: {
+					healthy: 68,
+					needs_care: 12,
+					needs_replacement: 4,
+				},
 				low_confidence: false,
-				tree_species_guess: "Tea",
-				observations: ["Dense canopy"],
-				recommendations: ["Thin section"],
-				original_image_url: "https://mock.com/orig.jpg",
-				overlay_image_url: "https://mock.com/over.jpg",
-				cv_debug: { orig_resolution: "4000x3000", work_resolution: "1500x1125", canopy_px: 412500, peaks_detected: 91, after_area_filter: 84 }
+				tree_species_guess: 'Tea',
+				observations: ['Dense canopy'],
+				recommendations: ['Thin section'],
+				original_image_url: 'https://mock.com/orig.jpg',
+				overlay_image_url: 'https://mock.com/over.jpg',
+				cv_debug: {
+					orig_resolution: '4000x3000',
+					work_resolution: '1500x1125',
+					canopy_px: 412500,
+					peaks_detected: 91,
+					after_area_filter: 84,
+				},
 			} as unknown as T;
 		}
 		if (endpoint.startsWith('/v1/trees/history')) {

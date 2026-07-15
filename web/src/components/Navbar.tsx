@@ -1,39 +1,19 @@
 import { NavLink } from 'react-router-dom';
-import { CloudRain, Search, User } from 'lucide-react';
-import { useState } from 'react';
+import { CloudSun, User } from 'lucide-react';
 
 export function Navbar() {
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
-    }
-  };
-
-  return (
-    <header className="navbar">
-      <div className="navbar-container">
-        {/* Logo */}
-        <NavLink to="/" className="navbar-logo">
-          <CloudRain size={28} className="text-accent-primary" />
-          <span>ForecastAI</span>
-        </NavLink>
-        
-        {/* Right Actions */}
-        <nav className="navbar-actions">
-          <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            Home
-          </NavLink>
-          <NavLink to="/farm" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            Farm AI
-          </NavLink>
-          <NavLink to="/account" className="profile-btn">
-            <User size={20} />
-          </NavLink>
-        </nav>
-      </div>
-    </header>
-  );
+  return <header className="navbar"><div className="navbar-container">
+    <NavLink to="/" className="navbar-logo"><span className="logo-mark"><CloudSun size={21} /></span><span>Forecast<span className="logo-accent">AI</span></span></NavLink>
+    <nav className="navbar-actions" aria-label="Main navigation">
+      <NavLink to="/" end className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+        Forecast
+      </NavLink>
+      <NavLink to="/farm" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+        Farm AI
+      </NavLink>
+      <NavLink to="/account" className="profile-btn" aria-label="Account">
+        <User size={19} />
+      </NavLink>
+    </nav>
+  </div></header>;
 }
