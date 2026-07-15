@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import { CloudRain, RefreshCw } from 'lucide-react';
 import { getWeather } from '../api/weather';
 import { ForecastPanels } from '../components/weather/ForecastPanels';
@@ -41,7 +41,7 @@ export function Home() {
     }
   }, [weather]);
 
-  function handleCoordinateSearch(event: FormEvent<HTMLFormElement>) {
+  function handleCoordinateSearch(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsSearchOpen(false);
     void loadWeather(coordinates);

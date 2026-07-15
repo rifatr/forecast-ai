@@ -145,4 +145,4 @@ graph TD
 ```
 
 ## License
-Private — assignment project.
+Private project.

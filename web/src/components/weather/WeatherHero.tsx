@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import {
   Droplets,
   LocateFixed,
@@ -22,7 +22,7 @@ interface WeatherHeroProps {
   onRefresh: () => void;
   onUseCurrentLocation: () => void;
   onSearchOpenChange: () => void;
-  onSearchSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onSearchSubmit: (event: SubmitEvent<HTMLFormElement>) => void;
 }
 
 export function WeatherHero({
