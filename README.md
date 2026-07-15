@@ -87,13 +87,62 @@ The single container will spin up, serving both your gorgeous React Frontend on 
 
 ---
 
+## Available API Routes (`/v1/*`)
+
+Explore the interactive Swagger API documentation locally at: **[http://localhost:3001/api](http://localhost:3001/api)**
+
+| Route               | Method | Purpose                                    |
+| ------------------- | ------ | ------------------------------------------ |
+| `/v1/weather`       | `GET`  | Current conditions and forecast retrieval  |
+| `/v1/current`       | `GET`  | Current conditions only                    |
+| `/v1/daily`         | `GET`  | Daily forecast data only                   |
+| `/v1/hourly`        | `GET`  | Hourly forecast data only                  |
+| `/v1/weather-geo`   | `GET`  | Weather conditions with geological IP data |
+| `/v1/dashboard`     | `GET`  | Aggregated weather, geo, usage, and quota  |
+| `/v1/usage`         | `GET`  | Upstream API usage limits                  |
+| `/v1/trees/analyze` | `POST` | AI farm analysis (multipart/form-data)     |
+| `/v1/trees/history` | `GET`  | Paginated tree analysis history            |
+| `/v1/trees/quota`   | `GET`  | Tree analysis quota remaining              |
+| `/health`           | `GET`  | System health check                        |
+
+---
+
 ## Environment Variables (`server/.env`)
 
 | Variable         | Required | Default                     | Description                                   |
 | ---------------- | -------- | --------------------------- | --------------------------------------------- |
 | `WAI_API_KEY`    | Yes*     | —                           | WeatherAI Bearer token (`wai_...`)            |
-| `WAI_PLAN`       | No       | `free`                      | `free` | `pro` | `scale`                      |
+| `WAI_PLAN`       | No       | `free`                      | `free` \| `pro` \| `scale`                    |
 | `WAI_MOCK`       | No       | `false`                     | Skip real upstream calls and return mock data |
 | `WAI_MOCK_TREES` | No       | `true`                      | Use mock data specifically for trees endpoints|
+| `WAI_BASE_URL`   | No       | `https://api.weather-ai.co` | Upstream API base URL                         |
 | `REDIS_URL`      | No       | `redis://localhost:6379`    | Redis connection string                       |
 | `PORT`           | No       | `3001`                      | HTTP port                                     |
+| `NODE_ENV`       | No       | `development`               | `development` \| `production` \| `test`       |
+| `THROTTLE_TTL`   | No       | `60000`                     | Rate-limit window (ms)                        |
+| `THROTTLE_LIMIT` | No       | `15`                        | Max requests per window per IP                |
+| `ADAPTIVE_CACHE_*`| No      | (various)                   | Thresholds/multipliers for SmartCache         |
+
+*\*Not required when `WAI_MOCK=true`.*
+
+---
+
+## Backend Architecture
+
+```mermaid
+graph TD
+    Client((Client App)) -->|HTTP Requests| API[ForecastAI NestJS Server]
+    API -->|Validates IP/Rate Limits| Throttler[Throttler Guard]
+    Throttler -->|Checks Cache| SmartCache[SmartCache Interceptor]
+    SmartCache -->|Cache Hit| Client
+    SmartCache -->|Cache Miss| Services[Domain Services]
+    
+    Services -->|Weather, Trees, Account| WAIClient[WeatherAiClient]
+    WAIClient -->|Injects WAI_API_KEY| Upstream[(WeatherAI API)]
+    
+    WAIClient -->|Extracts X-RateLimit| QuotaService[QuotaService]
+    QuotaService -->|Dynamically Adjusts TTL| SmartCache
+```
+
+## License
+Private — assignment project.
