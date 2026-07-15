@@ -187,11 +187,16 @@ export class WeatherAiClient {
 				lon: Number(params?.lon) || 0,
 				units: 'metric',
 				days: 1,
-				current: { time: '2026-07-14T18:45', interval: 900, temperature: 21.1, windspeed: 9.3, winddirection: 81, is_day: 0, weathercode: 1 },
+				current: { time: '2026-07-14T8:45', interval: 900, temperature: 21.1, windspeed: 9.3, winddirection: 81, is_day: 0, weathercode: 1 },
 				daily: [{ date: '2026-07-14', temp_max: 25.1, temp_min: 12.3, precipitation: 0, weathercode: 3 }],
-				hourly: [],
+				hourly: Array.from({ length: 24 }).map((_, i) => ({
+					time: `2026-07-15T${i.toString().padStart(2, '0')}:00`,
+					temp: 20 + Math.random() * 5,
+					precipitation: 0,
+					weathercode: 3
+				})),
 				geo: { ip: '127.0.0.1', ip_version: 'v4', lat: Number(params?.lat) || 0, lon: Number(params?.lon) || 0, city: 'Mock City', region: 'Mock Region', country: 'MC', timezone: 'UTC', isp: null, asn: null, is_datacenter: false },
-				ai_summary: null,
+				ai_summary: "The weather is looking good. Sunny and bright",
 			} as unknown as T;
 		}
 		if (endpoint.startsWith('/v1/weather')) {
