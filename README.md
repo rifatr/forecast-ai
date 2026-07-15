@@ -78,6 +78,7 @@ Deploying to production (DigitalOcean App Platform, Render, Railway, etc.) is en
    - `WAI_API_KEY=wai_...`
    - `REDIS_URL=redis://...` (from Upstash)
    - `NODE_ENV=production`
+   - `VITE_GOOGLE_MAPS_API_KEY=AIza...` as a **build-time** variable when Google location search is enabled.
 
 The single container will spin up, serving both your gorgeous React Frontend on the root path `/` and your secure API on `/v1/*`.
 
@@ -110,7 +111,7 @@ In the Google Cloud project used for that key:
 4. Restrict the key to **Maps JavaScript API** and **Places API**.
 5. Restart the Vite server after changing `web/.env.local`.
 
-Add the deployed site origin to the website restrictions before production. The UI stores coordinates only after the user selects a Google suggestion. Set `VITE_API_URL` only when the frontend is deployed separately from the API; leave it unset for the single-container deployment.
+Add the deployed site origin to the website restrictions before production. The UI stores coordinates only after the user selects a Google suggestion. Because Vite embeds `VITE_GOOGLE_MAPS_API_KEY` in the browser bundle, configure it as a **build-time** variable for Docker deployments; it is intentionally a browser-exposed key and must remain restricted to your allowed website origins and the required Google APIs. Set `VITE_API_URL` only when the frontend is deployed separately from the API; leave it unset for the single-container deployment.
 
 ---
 

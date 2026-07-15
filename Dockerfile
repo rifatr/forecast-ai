@@ -3,6 +3,8 @@
 # ==========================================
 FROM node:20-alpine AS web-build
 WORKDIR /app/web
+ARG VITE_GOOGLE_MAPS_API_KEY
+ENV VITE_GOOGLE_MAPS_API_KEY=${VITE_GOOGLE_MAPS_API_KEY}
 COPY web/package*.json ./
 RUN npm ci
 COPY web/ ./
