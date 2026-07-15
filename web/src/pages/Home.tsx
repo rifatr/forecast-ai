@@ -126,11 +126,11 @@ export function Home() {
     );
   }
 
-  if (isLoading && !weather) {
+  if (isLoading) {
     return (
       <div className="weather-state">
         <RefreshCw className="animate-spin" size={30} />
-        <span>Building your local forecast…</span>
+        <span>Fetching forecast…</span>
       </div>
     );
   }
