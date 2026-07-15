@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import {
 	ConfigModule as NestConfigModule,
 	ConfigService,
@@ -20,6 +22,10 @@ import { TreesModule } from './trees/trees.module';
 
 @Module({
 	imports: [
+		ServeStaticModule.forRoot({
+			rootPath: join(__dirname, '..', '..', 'web', 'dist'),
+			exclude: ['/v1/(.*)', '/health', '/api/(.*)'], // Exclude API and Swagger routes
+		}),
 		ConfigModule,
 		CommonModule,
 		HealthModule,
