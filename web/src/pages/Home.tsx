@@ -28,6 +28,21 @@ export function Home() {
     fetchWeather();
   }, []);
 
+  useEffect(() => {
+    if (data?.current) {
+      if (data.current.is_day === 0) {
+        document.body.classList.add('theme-night');
+      } else {
+        document.body.classList.remove('theme-night');
+      }
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('theme-night');
+    };
+  }, [data?.current?.is_day]);
+
   if (loading && !data) {
     return (
       <div style={{ marginTop: '4rem', textAlign: 'center', color: 'var(--text-secondary)' }}>

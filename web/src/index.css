@@ -22,6 +22,18 @@
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+
+  --bg-image: url('/sky-bg.jpg');
+}
+
+body.theme-night {
+  --bg-secondary: rgba(0, 0, 0, 0.35);
+  --bg-tertiary: rgba(0, 0, 0, 0.5);
+  --border-color: rgba(255, 255, 255, 0.15);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  --bg-image: url('/night-bg.jpg');
 }
 
 * {
@@ -32,12 +44,13 @@
 
 body {
   font-family: var(--font-primary);
-  background: url('/sky-bg.jpg') no-repeat center center fixed;
+  background: var(--bg-image) no-repeat center center fixed;
   background-size: cover;
   color: var(--text-primary);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  transition: background-image 0.5s ease-in-out, color 0.3s ease;
 }
 
 /* Layout */
