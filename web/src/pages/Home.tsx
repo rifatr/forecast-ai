@@ -1,18 +1,25 @@
 import { useState, useEffect } from 'react';
-import { MapPin, Droplets, Wind, RefreshCw, CloudSun } from 'lucide-react';
+import { MapPin, Droplets, Wind, RefreshCw, CloudSun, Search, Calendar } from 'lucide-react';
 
 export function Home() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchLat, setSearchLat] = useState('');
+  const [searchLon, setSearchLon] = useState('');
 
-  const fetchWeather = async () => {
+  const fetchWeather = async (lat?: string, lon?: string) => {
     setLoading(true);
     setError(null);
     try {
       const baseUrl = import.meta.env.DEV ? 'http://localhost:3001' : '';
-      // Using weather-geo with 7 days to get a rich weather app experience
-      const response = await fetch(`${baseUrl}/v1/weather/geo?days=7`);
+      let url = `${baseUrl}/v1/weather/geo?days=7`;
+      
+      if (lat && lon) {
+        url = `${baseUrl}/v1/weather?lat=${lat}&lon=${lon}&days=7`;
+      }
+      
+      const response = await fetch(url);
       
       if (!response.ok) throw new Error('Failed to fetch weather data');
       const json = await response.json();
@@ -40,6 +47,13 @@ export function Home() {
     }
   }, [data?.current?.is_day]);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchLat && searchLon) {
+      fetchWeather(searchLat, searchLon);
+    }
+  };
+
   if (loading && !data) {
     return (
       <div style={{ marginTop: '4rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
@@ -57,16 +71,44 @@ export function Home() {
     );
   }
 
-  const { current, hourly, geo } = data;
+  const { current, hourly, daily, geo } = data;
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       
+      {/* Search Location */}
+      <div className="card" style={{ padding: '1rem' }}>
+        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+            <Search size={20} color="var(--text-secondary)" />
+            <input 
+              type="number" 
+              step="any"
+              placeholder="Latitude (e.g. 40.71)" 
+              value={searchLat}
+              onChange={(e) => setSearchLat(e.target.value)}
+              className="search-input"
+              required
+            />
+            <input 
+              type="number" 
+              step="any"
+              placeholder="Longitude (e.g. -74.00)" 
+              value={searchLon}
+              onChange={(e) => setSearchLon(e.target.value)}
+              className="search-input"
+              required
+            />
+          </div>
+          <button type="submit" className="btn-primary">Search Weather</button>
+        </form>
+      </div>
+
       {/* Hero Current Weather */}
-      <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+      <div style={{ textAlign: 'center', padding: '1rem 1rem 3rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '1.25rem' }}>
           <MapPin size={24} />
-          <span>{geo?.city}, {geo?.country}</span>
+          <span>{geo?.city || `Lat: ${data.lat}, Lon: ${data.lon}`} {geo?.country ? `, ${geo.country}` : ''}</span>
         </div>
         
         <h1 style={{ fontSize: '7rem', lineHeight: '1', margin: '0', fontWeight: '300', textShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
@@ -74,7 +116,6 @@ export function Home() {
         </h1>
         
         <div style={{ fontSize: '1.5rem', color: 'var(--text-primary)', marginTop: '1rem', textTransform: 'capitalize', fontWeight: '500' }}>
-          {/* Mapping weather code to string could go here, fallback to general icon */}
           <CloudSun size={32} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '10px' }} />
           Code {current?.weathercode}
         </div>
@@ -99,7 +140,7 @@ export function Home() {
           overflowX: 'auto', 
           gap: '1rem', 
           paddingBottom: '1rem',
-          scrollbarWidth: 'none' // Hide scrollbar for Firefox
+          scrollbarWidth: 'none'
         }}>
           {hourly?.slice(0, 24).map((hour: any, idx: number) => {
             const time = new Date(hour.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -120,6 +161,42 @@ export function Home() {
         </div>
       </div>
       
+      {/* 7-Day Forecast */}
+      {daily && daily.length > 0 && (
+        <div style={{ marginTop: '1rem' }}>
+          <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', fontWeight: '600', paddingLeft: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Calendar size={20} />
+            7-Day Forecast
+          </h2>
+          <div className="card" style={{ padding: '0.5rem 1rem' }}>
+            {daily.map((day: any, idx: number) => {
+              const dateObj = new Date(day.date);
+              const dayName = idx === 0 ? 'Today' : dateObj.toLocaleDateString('en-US', { weekday: 'long' });
+              return (
+                <div key={idx} style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between',
+                  padding: '1rem 0',
+                  borderBottom: idx < daily.length - 1 ? '1px solid var(--glass-border)' : 'none'
+                }}>
+                  <div style={{ width: '100px', fontWeight: '600' }}>{dayName}</div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, justifyContent: 'center' }}>
+                    <Droplets size={16} color="var(--accent-secondary)" />
+                    <span style={{ fontSize: '0.875rem', width: '30px', color: 'var(--text-secondary)', fontWeight: '600' }}>{day.precipitation}%</span>
+                  </div>
+                  <CloudSun size={24} color="var(--accent-primary)" style={{ margin: '0 2rem' }} />
+                  <div style={{ display: 'flex', gap: '1rem', width: '100px', justifyContent: 'flex-end', fontSize: '1.1rem' }}>
+                    <span style={{ fontWeight: '700' }}>{Math.round(day.temp_max)}°</span>
+                    <span style={{ color: 'var(--text-secondary)', fontWeight: '600' }}>{Math.round(day.temp_min)}°</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

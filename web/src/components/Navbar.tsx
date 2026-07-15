@@ -21,18 +21,6 @@ export function Navbar() {
           <span>ForecastAI</span>
         </NavLink>
         
-        {/* Search Bar */}
-        <form onSubmit={handleSearch} className="navbar-search">
-          <Search size={18} className="search-icon" />
-          <input 
-            type="text" 
-            placeholder="Search city..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-        </form>
-
         {/* Right Actions */}
         <nav className="navbar-actions">
           <NavLink to="/" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>

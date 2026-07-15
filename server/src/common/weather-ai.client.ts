@@ -186,9 +186,19 @@ export class WeatherAiClient {
 				lat: Number(params?.lat) || 0,
 				lon: Number(params?.lon) || 0,
 				units: 'metric',
-				days: 1,
+				days: 2,
 				current: { time: '2026-07-14T8:45', interval: 900, temperature: 21.1, windspeed: 9.3, winddirection: 81, is_day: 0, weathercode: 1 },
-				daily: [{ date: '2026-07-14', temp_max: 25.1, temp_min: 12.3, precipitation: 0, weathercode: 3 }],
+				daily: Array.from({ length: 7 }).map((_, i) => {
+					const d = new Date('2026-07-15');
+					d.setDate(d.getDate() + i);
+					return {
+						date: d.toISOString().split('T')[0],
+						temp_max: 20 + Math.random() * 10,
+						temp_min: 10 + Math.random() * 5,
+						precipitation: Math.floor(Math.random() * 20),
+						weathercode: Math.floor(Math.random() * 4)
+					};
+				}),
 				hourly: Array.from({ length: 24 }).map((_, i) => ({
 					time: `2026-07-15T${i.toString().padStart(2, '0')}:00`,
 					temp: 20 + Math.random() * 5,
@@ -206,7 +216,17 @@ export class WeatherAiClient {
 				units: 'metric',
 				days: 3,
 				current: { time: '2026-07-14T18:45', interval: 900, temperature: 21.1, windspeed: 9.3, winddirection: 81, is_day: 0, weathercode: 1 },
-				daily: [],
+				daily: Array.from({ length: 7 }).map((_, i) => {
+					const d = new Date('2026-07-15');
+					d.setDate(d.getDate() + i);
+					return {
+						date: d.toISOString().split('T')[0],
+						temp_max: 20 + Math.random() * 10,
+						temp_min: 10 + Math.random() * 5,
+						precipitation: Math.floor(Math.random() * 20),
+						weathercode: Math.floor(Math.random() * 4)
+					};
+				}),
 				hourly: [],
 				ai_summary: null,
 			} as unknown as T;
