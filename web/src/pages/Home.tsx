@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react';
-import type { SubmitEvent } from 'react';
 import { CloudRain, RefreshCw } from 'lucide-react';
 import { getWeather } from '../api/weather';
 import { ForecastPanels } from '../components/weather/ForecastPanels';
+import { LocationSearchModal } from '../components/weather/LocationSearchModal';
 import { WeatherHero } from '../components/weather/WeatherHero';
+import type { PlaceSelection } from '../lib/googlePlaces';
 import { getLocationName, getNext24Hours } from '../lib/weather';
 import type { Coordinates, WeatherResponse } from '../types/weather';
 
-const EMPTY_COORDINATES: Coordinates = { lat: '', lon: '' };
-
 export function Home() {
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
-  const [coordinates, setCoordinates] = useState<Coordinates>(EMPTY_COORDINATES);
+  const [selectedPlace, setSelectedPlace] = useState<PlaceSelection | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLocating, setIsLocating] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isLocationSearchOpen, setIsLocationSearchOpen] = useState(false);
 
   async function loadWeather(nextCoordinates?: Coordinates) {
     setIsLoading(true);
@@ -41,15 +40,15 @@ export function Home() {
     }
   }, [weather]);
 
-  function handleCoordinateSearch(event: SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSearchOpen(false);
-    void loadWeather(coordinates);
+  function handleLocationSelected(place: PlaceSelection) {
+    setSelectedPlace(place);
+    setIsLocationSearchOpen(false);
+    void loadWeather(place.coordinates);
   }
 
   function handleUseCurrentLocation() {
     if (!navigator.geolocation) {
-      setError('Location is not supported in this browser. Use coordinates instead.');
+      setError('Location is not supported in this browser. Search for a place instead.');
       return;
     }
 
@@ -57,11 +56,20 @@ export function Home() {
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
         setIsLocating(false);
-        void loadWeather({ lat: String(coords.latitude), lon: String(coords.longitude) });
-      },
-      () => {
-        setIsLocating(false);
-        setError('We could not access your location. Check your browser permission or use coordinates.');
+        const coordinates = {
+          lat: String(coords.latitude),
+          lon: String(coords.longitude),
+        };
+
+        setSelectedPlace({
+          label: 'Current location',
+          coordinates,
+        });
+        void loadWeather(coordinates);
+    },
+    () => {
+      setIsLocating(false);
+      setError('We could not access your location. Check your browser permission or search for a place.');
       },
       { enableHighAccuracy: false, timeout: 10000 },
     );
@@ -91,7 +99,7 @@ export function Home() {
 
   if (!weather) return null;
 
-  const locationName = getLocationName(weather.geo, weather.lat, weather.lon);
+  const locationName = selectedPlace?.label || getLocationName(weather.geo, weather.lat, weather.lon);
   const hourlyForecast = getNext24Hours(weather.hourly, weather.current.time);
   const dailyForecast = weather.daily.slice(0, 7);
 
@@ -100,15 +108,11 @@ export function Home() {
       <WeatherHero
         weather={weather}
         locationName={locationName}
-        coordinates={coordinates}
         isLoading={isLoading}
         isLocating={isLocating}
-        isSearchOpen={isSearchOpen}
-        onCoordinatesChange={setCoordinates}
-        onRefresh={() => void loadWeather()}
+        onRefresh={() => void loadWeather(selectedPlace?.coordinates)}
         onUseCurrentLocation={handleUseCurrentLocation}
-        onSearchOpenChange={() => setIsSearchOpen((isOpen) => !isOpen)}
-        onSearchSubmit={handleCoordinateSearch}
+        onOpenLocationSearch={() => setIsLocationSearchOpen(true)}
       />
 
       {error && <div className="inline-alert">{error}</div>}
@@ -117,6 +121,12 @@ export function Home() {
         currentTime={weather.current.time}
         hourly={hourlyForecast}
         daily={dailyForecast}
+      />
+
+      <LocationSearchModal
+        isOpen={isLocationSearchOpen}
+        onClose={() => setIsLocationSearchOpen(false)}
+        onLocationSelected={handleLocationSelected}
       />
     </div>
   );

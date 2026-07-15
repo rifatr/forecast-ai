@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import type { RefObject } from 'react';
-import { CalendarDays, ChevronLeft, ChevronRight, Droplets } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Droplets } from 'lucide-react';
 import { formatDate, getWeatherCondition, isCurrentHour } from '../../lib/weather';
 import type { DailyWeather, HourlyWeather } from '../../types/weather';
 
@@ -97,7 +97,6 @@ export function ForecastPanels({ currentTime, hourly, daily }: ForecastPanelsPro
             >
               <ChevronRight size={18} />
             </button>
-            <CalendarDays size={20} />
           </div>
         </div>
 

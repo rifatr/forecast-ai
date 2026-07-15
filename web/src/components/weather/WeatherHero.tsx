@@ -1,4 +1,3 @@
-import type { SubmitEvent } from 'react';
 import {
   Droplets,
   LocateFixed,
@@ -9,34 +8,26 @@ import {
   Wind,
 } from 'lucide-react';
 import { getWeatherCondition } from '../../lib/weather';
-import type { Coordinates, WeatherResponse } from '../../types/weather';
+import type { WeatherResponse } from '../../types/weather';
 
 interface WeatherHeroProps {
   weather: WeatherResponse;
   locationName: string;
-  coordinates: Coordinates;
   isLoading: boolean;
   isLocating: boolean;
-  isSearchOpen: boolean;
-  onCoordinatesChange: (coordinates: Coordinates) => void;
   onRefresh: () => void;
   onUseCurrentLocation: () => void;
-  onSearchOpenChange: () => void;
-  onSearchSubmit: (event: SubmitEvent<HTMLFormElement>) => void;
+  onOpenLocationSearch: () => void;
 }
 
 export function WeatherHero({
   weather,
   locationName,
-  coordinates,
   isLoading,
   isLocating,
-  isSearchOpen,
-  onCoordinatesChange,
   onRefresh,
   onUseCurrentLocation,
-  onSearchOpenChange,
-  onSearchSubmit,
+  onOpenLocationSearch,
 }: WeatherHeroProps) {
   const { current, daily } = weather;
   const condition = getWeatherCondition(current.weathercode);
@@ -47,16 +38,10 @@ export function WeatherHero({
       <div className="hero-topline">
         <div>
           <p className="eyebrow">Live conditions</p>
-          <button
-            className="location-label"
-            type="button"
-            onClick={onSearchOpenChange}
-            aria-expanded={isSearchOpen}
-          >
+          <div className="location-label">
             <MapPin size={18} />
             {locationName}
-            <Search size={15} />
-          </button>
+          </div>
         </div>
 
         <div className="hero-actions">
@@ -69,6 +54,10 @@ export function WeatherHero({
           >
             <RefreshCw size={18} className={isLoading ? 'animate-spin' : ''} />
           </button>
+          <button className="button-secondary" type="button" onClick={onOpenLocationSearch}>
+            <Search size={17} />
+            Search location
+          </button>
           <button
             className="button-secondary"
             type="button"
@@ -80,37 +69,6 @@ export function WeatherHero({
           </button>
         </div>
       </div>
-
-      {isSearchOpen && (
-        <form className="coordinate-form" onSubmit={onSearchSubmit}>
-          <label>
-            Latitude
-            <input
-              value={coordinates.lat}
-              onChange={(event) => onCoordinatesChange({ ...coordinates, lat: event.target.value })}
-              type="number"
-              step="any"
-              placeholder="e.g. 23.8103"
-              required
-            />
-          </label>
-          <label>
-            Longitude
-            <input
-              value={coordinates.lon}
-              onChange={(event) => onCoordinatesChange({ ...coordinates, lon: event.target.value })}
-              type="number"
-              step="any"
-              placeholder="e.g. 90.4125"
-              required
-            />
-          </label>
-          <button className="button-primary" type="submit">
-            <Search size={16} />
-            View forecast
-          </button>
-        </form>
-      )}
 
       <div className="hero-weather">
         <div className="temperature-block">

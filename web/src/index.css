@@ -198,7 +198,7 @@ to {
   border:56px solid rgba(255,255,255,.09);
 }
 
-.hero-topline,.hero-weather,.weather-stats,.coordinate-form {
+.hero-topline,.hero-weather,.weather-stats {
   position:relative;
   z-index:1;
 }
@@ -271,44 +271,6 @@ to {
 .button-secondary {
   color:#17438f;
   background:white;
-}
-
-.coordinate-form {
-  margin-top:20px;
-  display:flex;
-  align-items:end;
-  gap:10px;
-  padding:13px;
-  background:rgba(4,34,98,.25);
-  border:1px solid rgba(255,255,255,.17);
-  border-radius:14px;
-}
-
-.coordinate-form label {
-  display:grid;
-  gap:4px;
-  font-size:11px;
-  font-weight:700;
-  color:rgba(255,255,255,.8);
-}
-
-.coordinate-form input {
-  width:160px;
-  border:1px solid rgba(255,255,255,.26);
-  border-radius:9px;
-  padding:8px 10px;
-  background:rgba(255,255,255,.13);
-  color:white;
-  outline:0;
-}
-
-.coordinate-form input::placeholder {
-  color:rgba(255,255,255,.65);
-}
-
-.coordinate-form .button-primary {
-  background:white;
-  color:#17438f;
 }
 
 .hero-weather {
@@ -641,6 +603,179 @@ to {
   margin-top:6px;
 }
 
+.location-modal-backdrop {
+  position:fixed;
+  z-index:1000;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding:22px;
+  background:rgba(4,14,34,.68);
+  backdrop-filter:blur(8px);
+}
+
+.location-modal {
+  position:relative;
+  width:min(100%,560px);
+  padding:29px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:var(--surface-strong);
+  box-shadow:0 25px 70px rgba(0,0,0,.32);
+}
+
+.location-modal-close {
+  position:absolute;
+  top:17px;
+  right:17px;
+  display:grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  color:var(--muted);
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:var(--surface);
+}
+
+.location-modal-heading {
+  display:flex;
+  align-items:flex-start;
+  gap:13px;
+  padding-right:35px;
+}
+
+.location-modal-icon {
+  display:grid;
+  place-items:center;
+  width:43px;
+  height:43px;
+  flex:0 0 auto;
+  color:#2764ef;
+  border-radius:14px;
+  background:#e4efff;
+}
+
+.location-modal-heading h2 {
+  margin:0;
+  color:var(--ink);
+  font-family:Outfit,sans-serif;
+  font-size:22px;
+  letter-spacing:-.025em;
+}
+
+.location-modal-heading > div > p:last-child {
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+}
+
+.place-search-field {
+  display:grid;
+  gap:7px;
+  margin-top:25px;
+  color:var(--ink);
+  font-size:12px;
+  font-weight:700;
+}
+
+.place-search-field > div {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:0 13px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  background:var(--surface);
+}
+
+.place-search-field svg {
+  flex:0 0 auto;
+  color:var(--blue);
+}
+
+.place-search-field input {
+  width:100%;
+  min-height:48px;
+  color:var(--ink);
+  border:0;
+  outline:0;
+  background:transparent;
+}
+
+.place-search-field input::placeholder {
+  color:var(--muted);
+}
+
+.place-search-status,
+.place-search-error {
+  margin:10px 0 0;
+  font-size:13px;
+}
+
+.place-search-status {
+  color:var(--muted);
+}
+
+.place-search-error {
+  color:#b74535;
+}
+
+.selected-place {
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-top:15px;
+  padding:13px;
+  color:#2260b7;
+  border:1px solid #b9d3ff;
+  border-radius:13px;
+  background:#edf5ff;
+}
+
+.selected-place > span {
+  display:grid;
+  gap:3px;
+}
+
+.selected-place small {
+  color:#4e77ae;
+  font-size:11px;
+}
+
+.selected-place strong {
+  color:#17438f;
+  font-size:13px;
+  line-height:1.4;
+}
+
+.location-modal-actions {
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:25px;
+}
+
+.button-ghost {
+  padding:10px 14px;
+  color:var(--muted);
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:transparent;
+  font-size:13px;
+  font-weight:700;
+}
+
+.pac-container {
+  z-index:1100 !important;
+  margin-top:5px;
+  border:1px solid rgba(49,87,138,.16);
+  border-radius:12px;
+  box-shadow:0 12px 30px rgba(13,36,74,.2);
+  font-family:'DM Sans',sans-serif;
+}
+
 @media (max-width:760px) {
   .navbar {
   height:66px;
@@ -676,15 +811,6 @@ to {
   font-size:0;
 }
 
-.coordinate-form {
-  align-items:stretch;
-  flex-direction:column;
-}
-
-.coordinate-form input {
-  width:100%;
-}
-
 .hero-weather {
   gap:20px;
   margin:35px 0 25px;
@@ -709,6 +835,19 @@ to {
 .weather-stats {
   justify-content:space-between;
 }
+
+  .location-modal {
+    padding:23px 20px;
+    border-radius:20px;
+  }
+
+  .location-modal-actions {
+    justify-content:stretch;
+  }
+
+  .location-modal-actions button {
+    flex:1;
+  }
 
 .weather-stats div {
   padding-right:8px;

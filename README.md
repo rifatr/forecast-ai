@@ -22,9 +22,16 @@ Instead of paying for and managing two separate servers (one for the frontend, o
 
 ---
 
-## 🚀 Quick Start (Local Development)
+## Quick Start (Local Development)
 
 For local development, we run the frontend and backend natively for **Instant Hot-Reloading** (bypassing the slow Docker build process), while using Docker strictly to spin up a local Redis database.
+
+### Prerequisites
+
+- Node.js and npm
+- Docker Desktop (or Docker Engine with Docker Compose)
+
+`docker-compose.yml` provides two services: `redis` for local development and `api` for testing the complete containerized application. The quick-start flow starts **only Redis**; the NestJS API and Vite frontend run locally with hot reload.
 
 ### 1. Initial Setup
 ```bash
@@ -35,10 +42,12 @@ cp server/.env.example server/.env
 ```
 
 ### 2. Start the Local Database (Redis)
-From the root directory:
+From the repository root, start the `redis` service defined in [`docker-compose.yml`](docker-compose.yml):
 ```bash
-docker-compose up redis -d
+docker compose up redis -d
 ```
+
+If your Docker installation still uses the legacy command, use `docker-compose up redis -d`. Confirm it is ready with `docker compose ps`.
 
 ### 3. Start the Backend API (Terminal 1)
 ```bash
@@ -58,7 +67,7 @@ npm run dev
 
 ---
 
-## 🌍 Production Deployment
+## Production Deployment
 
 Deploying to production (DigitalOcean App Platform, Render, Railway, etc.) is entirely automated.
 
@@ -84,6 +93,24 @@ The single container will spin up, serving both your gorgeous React Frontend on 
 - **Premium Aesthetics**: Built with a custom Vanilla CSS Design System (`index.css`) featuring deep dark modes, dynamic ambient glows, and frosted glassmorphism components.
 - **Lightning Fast**: Powered by Vite and React 18.
 - **Component Driven**: Modular, scalable architecture ready to consume the `/v1/dashboard` proxy endpoints.
+
+### Google place search
+
+The forecast location picker uses Google Places Autocomplete. Copy `web/.env.example` to `web/.env.local`, then add a browser-restricted `VITE_GOOGLE_MAPS_API_KEY`:
+
+```env
+VITE_GOOGLE_MAPS_API_KEY=AIza...
+```
+
+In the Google Cloud project used for that key:
+
+1. Link a billing account.
+2. Enable **Maps JavaScript API** and **Places API**. The current frontend uses `google.maps.places.Autocomplete`, so enable **Places API** (not **Places API (New)**).
+3. In **Google Maps Platform > Credentials**, restrict the key's application type to **Websites** and add every allowed frontend origin. For local Vite development, use `http://localhost:5173/*` and/or `http://127.0.0.1:5173/*`.
+4. Restrict the key to **Maps JavaScript API** and **Places API**.
+5. Restart the Vite server after changing `web/.env.local`.
+
+Add the deployed site origin to the website restrictions before production. The UI stores coordinates only after the user selects a Google suggestion. Set `VITE_API_URL` only when the frontend is deployed separately from the API; leave it unset for the single-container deployment.
 
 ---
 
