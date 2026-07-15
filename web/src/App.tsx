@@ -1,20 +1,20 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Sidebar } from './components/Sidebar';
-import { Dashboard } from './pages/Dashboard';
+import { Navbar } from './components/Navbar';
+import { Home } from './pages/Home';
+import { Account } from './pages/Account';
 
 function App() {
   return (
     <Router>
-      <div className="app-container">
-        <Sidebar />
+      <div className="app-wrapper">
+        <Navbar />
         
-        <main className="main-content">
+        <main className="main-container">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/weather" element={<div className="page-header"><h1>Weather & Geo</h1><p>Detailed weather data will appear here.</p></div>} />
+            <Route path="/" element={<Home />} />
+            <Route path="/search" element={<div className="page-header"><h1>Search Results</h1><p>Weather data for your search will appear here.</p></div>} />
             <Route path="/farm" element={<div className="page-header"><h1>Farm Intelligence</h1><p>Upload farm images for AI analysis.</p></div>} />
-            <Route path="/history" element={<div className="page-header"><h1>Analysis History</h1><p>Past AI farm analysis logs.</p></div>} />
-            <Route path="/account" element={<div className="page-header"><h1>Account Usage</h1><p>Detailed API rate limits and quotas.</p></div>} />
+            <Route path="/account" element={<Account />} />
           </Routes>
         </main>
       </div>
