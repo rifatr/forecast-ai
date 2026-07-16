@@ -19,7 +19,7 @@ export const envValidationSchema = Joi.object({
 	REDIS_URL: Joi.string().default('redis://localhost:6379'),
 
 	THROTTLE_TTL: Joi.number().positive().default(60000),
-	THROTTLE_LIMIT: Joi.number().positive().default(60),
+	THROTTLE_LIMIT: Joi.number().positive().default(15),
 
 	ADAPTIVE_CACHE_THRESHOLD_WARNING: Joi.number().positive().default(30),
 	ADAPTIVE_CACHE_MULTIPLIER_WARNING: Joi.number().positive().default(12),

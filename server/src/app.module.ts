@@ -11,8 +11,6 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from './config/config.module';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
 import { HealthModule } from './health/health.module';
 import { WeatherModule } from './weather/weather.module';
@@ -62,9 +60,7 @@ import { TreesModule } from './trees/trees.module';
 			}),
 		}),
 	],
-	controllers: [AppController],
 	providers: [
-		AppService,
 		{
 			provide: APP_GUARD,
 			useClass: ThrottlerGuard,
