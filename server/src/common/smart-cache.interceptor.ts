@@ -9,7 +9,16 @@ import type { Cache } from 'cache-manager';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ConfigService } from '@nestjs/config';
-import { QuotaService } from './quota.service';
+import { QuotaData, QuotaService } from './quota.service';
+
+interface AdaptiveCacheConfig {
+	warningThreshold: number;
+	warningMultiplier: number;
+	criticalThreshold: number;
+	criticalMultiplier: number;
+	emergencyThreshold: number;
+	emergencyMultiplier: number;
+}
 
 @Injectable()
 export class SmartCacheInterceptor extends CacheInterceptor {
@@ -38,54 +47,66 @@ export class SmartCacheInterceptor extends CacheInterceptor {
 				return of(value);
 			}
 
-			// Get base TTL from reflector (default 5 mins)
-			const baseTtl =
-				this.reflector.get<number>('cache_ttl', context.getHandler()) ??
-				300000;
+			const baseTtl = this.reflector.get<number>('cache_ttl', context.getHandler()) ?? 300000;
 
-			// Fetch all adaptive config once cleanly (guaranteed to exist by Joi validation)
-			const adaptiveConfig = this.configService.get<Record<string, number>>('cache.adaptive');
-			if(!adaptiveConfig) {
-				throw new Error('Adaptive cache configuration is missing from ConfigService!'); 
+			const adaptiveConfig = this.configService.get<AdaptiveCacheConfig>('cache.adaptive');
+			if (!adaptiveConfig) {
+				throw new Error('Adaptive cache configuration is missing from ConfigService!');
 			}
-
-			const warnT = adaptiveConfig.warningThreshold;
-			const warnM = adaptiveConfig.warningMultiplier;
-			const critT = adaptiveConfig.criticalThreshold;
-			const critM = adaptiveConfig.criticalMultiplier;
-			const emergT = adaptiveConfig.emergencyThreshold;
-			const emergM = adaptiveConfig.emergencyMultiplier;
 
 			return next.handle().pipe(
 				tap((response) => {
-					this.quotaService
-						.getQuota()
-						.then((quota) => {
-							let finalTtl = baseTtl;
-
-							if (quota && quota.limit > 0) {
-								const percentage =
-									(quota.remaining / quota.limit) * 100;
-
-								const multiplier =
-									percentage < emergT ? emergM :
-									percentage < critT ? critM :
-									percentage < warnT ? warnM :
-									1;
-
-								finalTtl = baseTtl * multiplier;
-							}
-
-							this.customCacheManager
-								.set(key, response, finalTtl)
-								.catch(() => { });
-						})
-						.catch(() => { });
+					void this.storeResponse(
+						key,
+						response,
+						baseTtl,
+						adaptiveConfig,
+					);
 				}),
 			);
 		} catch {
-			// Fallback to handler if cache fails
 			return next.handle();
 		}
+	}
+
+	private async storeResponse(
+		key: string,
+		response: unknown,
+		baseTtl: number,
+		config: AdaptiveCacheConfig,
+	): Promise<void> {
+		try {
+			const quota = await this.quotaService.getQuota();
+			const ttl = this.getTtl(baseTtl, quota, config);
+			await this.customCacheManager.set(key, response, ttl);
+		} catch {
+			// Caching is best-effort and must not affect a successful response.
+		}
+	}
+
+	private getTtl(
+		baseTtl: number,
+		quota: QuotaData | undefined,
+		config: AdaptiveCacheConfig,
+	): number {
+		if (!quota || quota.limit <= 0) {
+			return baseTtl;
+		}
+
+		const remainingPercentage = (quota.remaining / quota.limit) * 100;
+
+		if (remainingPercentage < config.emergencyThreshold) {
+			return baseTtl * config.emergencyMultiplier;
+		}
+
+		if (remainingPercentage < config.criticalThreshold) {
+			return baseTtl * config.criticalMultiplier;
+		}
+
+		if (remainingPercentage < config.warningThreshold) {
+			return baseTtl * config.warningMultiplier;
+		}
+
+		return baseTtl;
 	}
 }

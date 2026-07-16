@@ -12,10 +12,7 @@ async function bootstrap() {
 	const configService = app.get(ConfigService);
 	const port = configService.get<number>('port', 3001);
 
-	app.enableCors({
-		origin: true,
-		credentials: true,
-	});
+	app.enableCors();
 
 	// Trust the reverse proxy (Railway, Render, etc.) to securely parse X-Forwarded-For
 	// This ensures @Ip() returns the real client IP instead of the load balancer's IP

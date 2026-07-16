@@ -3,6 +3,13 @@ import { WeatherService } from '../weather/weather.service';
 import { AccountService } from '../account/account.service';
 import { TreesService } from '../trees/trees.service';
 import { WeatherGeoQueryDto } from '../weather/dto/weather-geo-query.dto';
+import type {
+	WeatherAiGeoData,
+	WeatherAiGeoResponse,
+} from '../common/interfaces/weather-ai.interface';
+
+type DashboardError = { error: string };
+type DashboardWeather = Omit<WeatherAiGeoResponse, 'geo'>;
 
 @Injectable()
 export class DashboardService {
@@ -27,30 +34,33 @@ export class DashboardService {
 			this.treesService.getQuota(),
 		]);
 
+		const getErrorMessage = (reason: unknown, fallback: string): string =>
+			reason instanceof Error ? reason.message : fallback;
+
 		const extract = <T>(
 			res: PromiseSettledResult<T>,
 			defaultMsg: string,
-		): T | { error: string } =>
+		): T | DashboardError =>
 			res.status === 'fulfilled'
 				? res.value
-				: { error: (res.reason as Error)?.message ?? defaultMsg };
+				: { error: getErrorMessage(res.reason, defaultMsg) };
 
-		const weatherPayload = extract(
-			weatherRes,
-			'Failed to load weather',
-		);
+		const weatherPayload = extract(weatherRes, 'Failed to load weather');
 
-		let weather = { error: 'Failed to load weather' };
-		let geo = { error: 'Failed to geological data' };
+		let weather: DashboardWeather | DashboardError = {
+			error: 'Failed to load weather',
+		};
+		let geo: WeatherAiGeoData | DashboardError = {
+			error: 'Failed to load geolocation data',
+		};
 
-		if ('current' in weatherPayload && 'geo' in weatherPayload) {
-			// weatherPayload is WeatherAiGeoResponse
-			const { geo: geoData, ...weatherData } = weatherPayload as any;
+		if ('error' in weatherPayload) {
+			weather = weatherPayload;
+			geo = weatherPayload;
+		} else {
+			const { geo: geoData, ...weatherData } = weatherPayload;
 			weather = weatherData;
 			geo = geoData;
-		} else if ('error' in weatherPayload) {
-			weather = { error: (weatherPayload as { error: string }).error };
-			geo = { error: (weatherPayload as { error: string }).error };
 		}
 
 		return {
