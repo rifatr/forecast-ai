@@ -22,7 +22,7 @@ import { TreesModule } from './trees/trees.module';
 	imports: [
 		ServeStaticModule.forRoot({
 			rootPath: join(__dirname, '..', '..', 'web', 'dist'),
-			exclude: ['/v1/(.*)', '/health', '/api/(.*)'], // Exclude API and Swagger routes
+			exclude: ['/v1/{*path}', '/health', '/api/{*path}'],
 		}),
 		ConfigModule,
 		CommonModule,
