@@ -26,7 +26,17 @@ VITE_API_URL=http://localhost:3001
 VITE_GOOGLE_MAPS_API_KEY=AIza...
 ```
 
-`VITE_GOOGLE_MAPS_API_KEY` is a browser-exposed Google Maps key. Restrict it to your allowed website origins and to **Maps JavaScript API** and **Places API**. The root README contains the complete Google Cloud configuration checklist.
+### Google Place Search
+
+`VITE_GOOGLE_MAPS_API_KEY` is a browser-exposed Google Maps key. In the Google Cloud project for this key:
+
+1. Link a billing account.
+2. Enable **Maps JavaScript API** and **Places API**. This frontend uses `google.maps.places.Autocomplete`, so it requires **Places API**, not **Places API (New)**.
+3. Restrict the key's application type to **Websites** and add every permitted frontend origin. For local development, add `http://localhost:5173/*` and/or `http://127.0.0.1:5173/*`.
+4. Restrict the key to **Maps JavaScript API** and **Places API**.
+5. Restart Vite after changing `.env.local`.
+
+Add the deployed frontend origin before production. Vite embeds this value in the browser bundle, so it must remain restricted to the approved website origins and APIs.
 
 ## Scripts
 
@@ -56,4 +66,4 @@ The root Dockerfile builds this Vite app and serves it through the NestJS contai
 VITE_GOOGLE_MAPS_API_KEY=AIza... docker compose up --build
 ```
 
-See the [root deployment guide](../README.md#production-deployment) for production environment variables and provider setup.
+See the [root Docker deployment guide](../README.md#docker-deployment) for the complete container workflow.

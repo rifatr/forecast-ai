@@ -27,23 +27,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/v1/dashboard?lat={{lat}}&lon={{lon}}",
+					"raw": "{{baseUrl}}/v1/dashboard",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"v1",
 						"dashboard"
-					],
-					"query": [
-						{
-							"key": "lat",
-							"value": "{{lat}}"
-						},
-						{
-							"key": "lon",
-							"value": "{{lon}}"
-						}
 					]
 				}
 			}
@@ -80,18 +70,46 @@
 			}
 		},
 		{
-			"name": "Get Geo Weather",
+			"name": "Get Current Weather",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/v1/weather-geo",
+					"raw": "{{baseUrl}}/v1/current?lat={{lat}}&lon={{lon}}",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
 						"v1",
-						"weather-geo"
+						"current"
+					],
+					"query": [
+						{
+							"key": "lat",
+							"value": "{{lat}}"
+						},
+						{
+							"key": "lon",
+							"value": "{{lon}}"
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "Get Geo Weather",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/v1/weather/geo",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"v1",
+						"weather",
+						"geo"
 					]
 				}
 			}
