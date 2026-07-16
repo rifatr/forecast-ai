@@ -1,6 +1,6 @@
 # ForecastAI
 
-ForecastAI is a full-stack weather application with location-based forecasts, Farm AI image analysis, and account usage insights. It pairs a React/Vite frontend with a NestJS proxy that securely integrates with WeatherAI.
+ForecastAI is a full-stack weather application with location-based forecasts using Google Places search, Farm AI image analysis, and account usage insights. It pairs a React/Vite frontend with a NestJS server that securely integrates with [WeatherAI](https://weather-ai.co).
 
 Live URL: [https://forecast-ai.rifat.app](https://forecast-ai.rifat.app)
 
@@ -10,7 +10,7 @@ Swagger UI: [https://forecast-ai.rifat.app/api](https://forecast-ai.rifat.app/ap
 
 ```text
 forecast-ai/
-├── server/             # NestJS API, caching, rate limiting, and Farm AI proxy
+├── server/             # NestJS API, caching, rate limiting, and proxy
 ├── web/                # React/Vite frontend
 ├── Dockerfile          # Builds and serves the complete application
 └── docker-compose.yml  # Local Redis and containerised application
